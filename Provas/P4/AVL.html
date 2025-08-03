@@ -1,0 +1,724 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Árvore AVL</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-default { background-color: rgba(84, 72, 49, 0.08); }
+.select-value-color-gray { background-color: rgba(84, 72, 49, 0.15); }
+.select-value-color-brown { background-color: rgba(210, 162, 141, 0.35); }
+.select-value-color-orange { background-color: rgba(224, 124, 57, 0.27); }
+.select-value-color-yellow { background-color: rgba(236, 191, 66, 0.39); }
+.select-value-color-green { background-color: rgba(123, 183, 129, 0.27); }
+.select-value-color-blue { background-color: rgba(93, 165, 206, 0.27); }
+.select-value-color-purple { background-color: rgba(168, 129, 197, 0.27); }
+.select-value-color-pink { background-color: rgba(225, 136, 179, 0.27); }
+.select-value-color-red { background-color: rgba(244, 171, 159, 0.4); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2414f3b9-a5e5-8050-bbc7-faf1cf6fd37d" class="page sans"><header><h1 class="page-title">Árvore AVL</h1><p class="page-description"></p><table class="properties"><tbody></tbody></table></header><div class="page-body"><ul id="2414f3b9-a5e5-8092-b6eb-f9105e49d01b" class="bulleted-list"><li style="list-style-type:disc">Pesquisar sobre as rotações LL, RR, RL e LR</li></ul><h1 id="2414f3b9-a5e5-8093-8cfd-c83f87a08e35" class="">Q1)</h1><p id="2414f3b9-a5e5-8003-971c-fff1577e2972" class="">Considere uma árvore AVL iniciada apenas com o valor de 50. Realize o processo de inserção dos elementos na ordem indicada nesta árvore AVL.<br/><br/></p><p id="2414f3b9-a5e5-80a0-a7e9-ef94b8271c76" class="">X = {35, 85, 48, 47, 24, 40, 69, 93, 31, 11, 77, 30, 74, 67, 87, 98, 40, 83, 18, 35}</p><p id="2414f3b9-a5e5-804a-9b73-fe515b0799ae" class=""><br/>Após a inserção de cada número, realize o processo de balanceamento, indicando qual rotação foi necessária para balancear.<br/></p><p id="2414f3b9-a5e5-80a2-bd90-fc378f35685b" class="">
+</p><h1 id="2414f3b9-a5e5-803d-9b8b-f2f4318d56ed" class="">Q2)</h1><p id="2414f3b9-a5e5-8077-b331-d6f30ff1c468" class="">Julgue a seguinte afirmação: “Toda árvore binária de busca cheia é necessariamente uma árvore AVL.”. Caso seja falso, mostre uma árvore binária de busca completa que não é AVL. Caso seja verdadeiro, explique em termos dos fatores de balanceamento.</p><h2 id="2414f3b9-a5e5-801e-b427-f7aa98caa8ba" class=""><strong>Afirmação</strong></h2><p id="2414f3b9-a5e5-80ce-8536-d9729397be5a" class=""><strong>“Toda árvore binária de busca cheia é necessariamente uma árvore AVL.”</strong></p><hr id="2414f3b9-a5e5-800b-bf87-e2a6c1c4cd01"/><h2 id="2414f3b9-a5e5-80a5-9957-cc93dd3fb15b" class=""><strong>Definições importantes</strong></h2><ul id="2414f3b9-a5e5-80a5-98de-c90e6ae34f42" class="bulleted-list"><li style="list-style-type:disc"><strong>Árvore binária de busca cheia</strong>:<p id="2414f3b9-a5e5-80fc-9c42-d90322376408" class="">Uma árvore binária onde <strong>todos os nós têm 0 ou 2 filhos</strong> (nunca só 1 filho).</p></li></ul><ul id="2414f3b9-a5e5-805c-91e3-e34f98674d2f" class="bulleted-list"><li style="list-style-type:disc"><strong>Árvore AVL</strong>:<p id="2414f3b9-a5e5-80f9-9b09-df6a90422bf0" class="">Árvore binária de busca balanceada, onde para <strong>todo nó</strong>, o fator de balanceamento (altura da subárvore esquerda - altura da subárvore direita) é <strong>-1, 0 ou 1</strong>.</p></li></ul><hr id="2414f3b9-a5e5-80b8-8daa-ffc4620d697f"/><h2 id="2414f3b9-a5e5-8024-b132-fae4166ba37d" class=""><strong>Julgamento da afirmação</strong></h2><p id="2414f3b9-a5e5-80a3-bcae-da7562bdd286" class=""><strong>A afirmação é falsa.</strong></p><ul id="2414f3b9-a5e5-80fb-9e12-dd09dae0a193" class="bulleted-list"><li style="list-style-type:disc">Nem toda árvore binária de busca cheia é necessariamente AVL, pois a condição de &quot;cheia&quot; não garante equilíbrio das alturas das subárvores.</li></ul><hr id="2414f3b9-a5e5-800f-89a1-e516cf7b77e2"/><h2 id="2414f3b9-a5e5-8092-aa38-d5565c486b3d" class=""><strong>Exemplo de árvore binária de busca cheia que não é AVL</strong></h2><p id="2414f3b9-a5e5-807d-907a-fa9ba617e054" class="">Considere a seguinte árvore binária de busca cheia:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80e5-afd6-e4eeaa8c01bf" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        10
+       /  \
+      5    15
+     / \
+    2   7
+   / \
+  1   3</code></pre><ul id="2414f3b9-a5e5-8098-a3b2-e9968d60afe3" class="bulleted-list"><li style="list-style-type:disc">Essa árvore é <strong>cheia</strong> (todos os nós têm 0 ou 2 filhos):<ul id="2414f3b9-a5e5-80b3-86af-c4185e350f39" class="bulleted-list"><li style="list-style-type:circle">10 tem 2 filhos</li></ul><ul id="2414f3b9-a5e5-805b-93f9-e22e83fb6c6b" class="bulleted-list"><li style="list-style-type:circle">5 tem 2 filhos</li></ul><ul id="2414f3b9-a5e5-8018-85c4-e24b8dae1629" class="bulleted-list"><li style="list-style-type:circle">2 tem 2 filhos</li></ul><ul id="2414f3b9-a5e5-80e0-8859-dc91224315a5" class="bulleted-list"><li style="list-style-type:circle">1, 3, 7, 15 são folhas</li></ul></li></ul><ul id="2414f3b9-a5e5-80ca-8852-d3d9e8a2cac2" class="bulleted-list"><li style="list-style-type:disc">Verifique o fator de balanceamento do nó 5:<ul id="2414f3b9-a5e5-8031-a6be-e005a23fb307" class="bulleted-list"><li style="list-style-type:circle">Altura da subárvore esquerda de 5 (nó 2) = 2</li></ul><ul id="2414f3b9-a5e5-801d-be3b-e2fdd0243b78" class="bulleted-list"><li style="list-style-type:circle">Altura da subárvore direita de 5 (nó 7) = 1</li></ul><ul id="2414f3b9-a5e5-80a2-bb5f-dad6e653ea4a" class="bulleted-list"><li style="list-style-type:circle">Fator de balanceamento = 2 - 1 = 1 → ok.</li></ul></li></ul><ul id="2414f3b9-a5e5-8094-ba2e-e1515637f176" class="bulleted-list"><li style="list-style-type:disc">Verifique o fator de balanceamento do nó 2:<ul id="2414f3b9-a5e5-807a-8bcb-e69b99ee6e12" class="bulleted-list"><li style="list-style-type:circle">Altura da subárvore esquerda (1) = 1</li></ul><ul id="2414f3b9-a5e5-80a1-a047-e4f1455593c8" class="bulleted-list"><li style="list-style-type:circle">Altura da subárvore direita (3) = 1</li></ul><ul id="2414f3b9-a5e5-801b-867f-f441ee161775" class="bulleted-list"><li style="list-style-type:circle">Fator de balanceamento = 1 - 1 = 0 → ok.</li></ul></li></ul><ul id="2414f3b9-a5e5-80e3-8be1-c0da2bfe2ff7" class="bulleted-list"><li style="list-style-type:disc">Verifique o fator de balanceamento do nó 10:<ul id="2414f3b9-a5e5-80b2-b7d8-e27a3899ac82" class="bulleted-list"><li style="list-style-type:circle">Altura da subárvore esquerda (nó 5) = 3</li></ul><ul id="2414f3b9-a5e5-80a8-807e-f13876a4bf51" class="bulleted-list"><li style="list-style-type:circle">Altura da subárvore direita (nó 15) = 1</li></ul><ul id="2414f3b9-a5e5-8084-9bdc-da99fc5862ab" class="bulleted-list"><li style="list-style-type:circle">Fator de balanceamento = 3 - 1 = 2 → <strong>fora do limite permitido (-1,0,1)</strong></li></ul></li></ul><hr id="2414f3b9-a5e5-8013-85bd-c1b9f6ff7aa1"/><h2 id="2414f3b9-a5e5-80f4-9950-f276ec9b99cd" class=""><strong>Conclusão</strong></h2><ul id="2414f3b9-a5e5-802a-898b-c7bc9c6f24e1" class="bulleted-list"><li style="list-style-type:disc">Embora a árvore seja <strong>cheia</strong>, ela <strong>não é AVL</strong>, pois o fator de balanceamento no nó 10 é 2, indicando desbalanceamento.</li></ul><h1 id="2414f3b9-a5e5-800c-942f-fb85f17fb7b5" class="">Q3)</h1><p id="2414f3b9-a5e5-805d-8762-c68eff413c6a" class="">Julgue a seguinte afirmação: “Toda árvore AVL é necessariamente uma árvore binária de busca completa”. Caso seja falso, mostre uma árvore AVL que não é Binária de busca completa. Caso seja verdadeiro, explique em termos dos fatores de balanceamento.</p><h2 id="2414f3b9-a5e5-8019-8ab5-c29c2780f496" class=""><strong>Afirmação</strong></h2><p id="2414f3b9-a5e5-80e0-b0ff-f7c679664307" class=""><strong>“Toda árvore AVL é necessariamente uma árvore binária de busca completa.”</strong></p><hr id="2414f3b9-a5e5-8053-a099-cfe28b9d35fb"/><h2 id="2414f3b9-a5e5-8018-8430-f9d7c0ab6b64" class=""><strong>Definições importantes</strong></h2><ul id="2414f3b9-a5e5-80b2-a3de-ecc013fd7c20" class="bulleted-list"><li style="list-style-type:disc"><strong>Árvore AVL</strong>:<p id="2414f3b9-a5e5-80bf-ac4a-c5e292917e95" class="">É uma árvore binária de busca balanceada onde, para cada nó, o fator de balanceamento está entre -1 e 1.</p></li></ul><ul id="2414f3b9-a5e5-80fd-b9aa-c659b8981d8b" class="bulleted-list"><li style="list-style-type:disc"><strong>Árvore binária de busca completa</strong>:<p id="2414f3b9-a5e5-802e-a51b-fc2825b186df" class="">Árvore binária onde <strong>todos os níveis, exceto possivelmente o último, estão completamente preenchidos</strong>, e todos os nós do último nível estão o mais à esquerda possível.</p></li></ul><hr id="2414f3b9-a5e5-8023-a565-f3ead5dd2b72"/><h2 id="2414f3b9-a5e5-800c-821d-f377b9a03e0e" class=""><strong>Julgamento da afirmação</strong></h2><p id="2414f3b9-a5e5-8079-a151-f18063f4c23e" class=""><strong>A afirmação é falsa.</strong></p><ul id="2414f3b9-a5e5-80ef-952c-ca59b36ecffe" class="bulleted-list"><li style="list-style-type:disc">Uma árvore AVL não precisa ser <strong>completa</strong> — ela só precisa estar balanceada (fator de balanceamento entre -1 e 1).</li></ul><ul id="2414f3b9-a5e5-80c1-998f-de91ed6603a1" class="bulleted-list"><li style="list-style-type:disc">Uma árvore AVL pode ter níveis incompletos e ainda assim manter o fator de balanceamento adequado.</li></ul><hr id="2414f3b9-a5e5-80b2-aabf-fcda0538d990"/><h2 id="2414f3b9-a5e5-80e9-bc8c-d3a0f34aad24" class=""><strong>Exemplo de árvore AVL que não é completa</strong></h2><p id="2414f3b9-a5e5-8011-96c0-ece959c62512" class="">Considere a seguinte árvore AVL:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8030-b900-ded7ef24da6f" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+      30
+     /  \
+   20    40
+  /
+10</code></pre><ul id="2414f3b9-a5e5-8038-baec-d594509a432c" class="bulleted-list"><li style="list-style-type:disc">É uma árvore AVL pois:<ul id="2414f3b9-a5e5-80c8-9d84-d0ba49d4373d" class="bulleted-list"><li style="list-style-type:circle">No nó 10: folha, fator de balanceamento 0.</li></ul><ul id="2414f3b9-a5e5-80ed-9ed7-c363fc908c9a" class="bulleted-list"><li style="list-style-type:circle">No nó 20: esquerda altura 1 (10), direita 0 → fator = 1 (ok).</li></ul><ul id="2414f3b9-a5e5-8043-8bfa-d1b39589a289" class="bulleted-list"><li style="list-style-type:circle">No nó 40: folha, fator 0.</li></ul><ul id="2414f3b9-a5e5-802f-b398-ec5b4c84b8ea" class="bulleted-list"><li style="list-style-type:circle">No nó 30: esquerda altura 2 (20), direita altura 1 (40) → fator = 1 (ok).</li></ul></li></ul><ul id="2414f3b9-a5e5-8097-b41c-e068c976c66c" class="bulleted-list"><li style="list-style-type:disc">Mas essa árvore <strong>não é completa</strong>, pois o nível 2 não está completamente preenchido (o filho direito do 20 está ausente).</li></ul><hr id="2414f3b9-a5e5-80fc-ae18-d05f0765810f"/><h2 id="2414f3b9-a5e5-807b-94dc-de75414fabe6" class=""><strong>Conclusão</strong></h2><ul id="2414f3b9-a5e5-80fb-853c-db08074834cd" class="bulleted-list"><li style="list-style-type:disc">Árvore AVL é balanceada, mas não necessariamente completa.</li></ul><ul id="2414f3b9-a5e5-8096-b1fb-cd425738fd23" class="bulleted-list"><li style="list-style-type:disc">O requisito para AVL é o fator de balanceamento em cada nó estar em {-1, 0, 1}, não a completude dos níveis.</li></ul><h1 id="2414f3b9-a5e5-80b7-ab71-d79f64618481" class="">Q4)</h1><p id="2414f3b9-a5e5-8088-9147-f22b90a4690a" class="">Utilizando a árvore construída na questão Q1, realize o processo de remoção dos nós um a um, na mesma ordem que foi inserido. Realize o processo de rotação a cada momento que for necessário.</p><p id="2414f3b9-a5e5-805d-a163-ef8bc4fadbfa" class="">
+</p><h1 id="2414f3b9-a5e5-80fe-9d5b-db7b72265b65" class="">Q5)</h1><p id="2414f3b9-a5e5-8043-82bb-d30d2d604e68" class="">Considere a Árvore AVL abaixo para executar as operações <strong>na ordem indicada abaixo</strong>:</p><figure id="2414f3b9-a5e5-8091-8ab2-e23d7ffb1dd2" class="image"><a href="image.png"><img style="width:376px" src="image.png"/></a></figure><p id="2414f3b9-a5e5-80b5-8aa2-ea072811cd82" class="">Mostre o <strong>passo a passo</strong> da inserção dos números na árvore AVL abaixo, <strong>circulando</strong> o resultado após a inserção e balanceamento de <strong>cada número</strong>.</p><p id="2414f3b9-a5e5-8011-8606-dfb350d64e6a" class="">Números a inserir:</p><p id="2414f3b9-a5e5-8069-8f9e-c5207e6c7fc9" class=""><strong>13 – 14 – 11</strong></p><h2 id="2414f3b9-a5e5-80ac-8f0a-e50bf21439b5" class="">Inserção de <strong>13</strong></h2><p id="2414f3b9-a5e5-8023-bd89-e599add49fcd" class=""><strong>Caminho de inserção</strong>:</p><ul id="2414f3b9-a5e5-80a0-95bd-f1cd702b7513" class="bulleted-list"><li style="list-style-type:disc">13 &lt; 16 → vai para a esquerda</li></ul><ul id="2414f3b9-a5e5-8026-8206-fccabc1ca410" class="bulleted-list"><li style="list-style-type:disc">13 &gt; 10 → vai para a direita</li></ul><ul id="2414f3b9-a5e5-8034-871d-e9be46fd5115" class="bulleted-list"><li style="list-style-type:disc">13 &gt; 12 → vai para a direita</li></ul><p id="2414f3b9-a5e5-802f-92e8-d41442335bf0" class="">Inserimos <strong>13 como filho direito de 12</strong>.</p><p id="2414f3b9-a5e5-8054-8e99-ddbc2824a9b1" class=""><strong>Fatores de balanceamento</strong>:</p><ul id="2414f3b9-a5e5-80b8-b7ca-c9b71e4107e9" class="bulleted-list"><li style="list-style-type:disc">12 → FB = -1 (direita 1, esquerda 0)</li></ul><ul id="2414f3b9-a5e5-80d2-9266-c60f9f310e67" class="bulleted-list"><li style="list-style-type:disc">10 → FB = -1 (altura direita aumentou)</li></ul><ul id="2414f3b9-a5e5-8098-8d5c-c72a597f8c27" class="bulleted-list"><li style="list-style-type:disc">16 → FB = 0 → sem alteração</li></ul><p id="2414f3b9-a5e5-8044-9cda-d3d9d150eb24" class="">Nenhum nó tem FB fora do intervalo [-1, 1], então <strong>não há rotação</strong>.</p><h3 id="2414f3b9-a5e5-8038-a3dd-d87be94d1818" class="">Árvore após inserção de <strong>13</strong>:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8034-a189-dda213f55fd2" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">				 16
+       /    \
+     10      20
+    /  \     / \
+   8   12   17  25
+          \
+          13
+</code></pre><hr id="2414f3b9-a5e5-801d-beda-f27ee400d282"/><h2 id="2414f3b9-a5e5-8054-83f0-ee6ffda175c1" class="">Inserção de <strong>14</strong></h2><p id="2414f3b9-a5e5-80c9-b8dc-c39e64ccb52d" class=""><strong>Caminho de inserção</strong>:</p><ul id="2414f3b9-a5e5-803d-81a6-d75cee1112fc" class="bulleted-list"><li style="list-style-type:disc">14 &lt; 16 → esquerda</li></ul><ul id="2414f3b9-a5e5-8006-9181-e2245a7d6889" class="bulleted-list"><li style="list-style-type:disc">14 &gt; 10 → direita</li></ul><ul id="2414f3b9-a5e5-8049-bcda-f8f4ff789c88" class="bulleted-list"><li style="list-style-type:disc">14 &gt; 12 → direita</li></ul><ul id="2414f3b9-a5e5-80ee-b342-c9891c13b397" class="bulleted-list"><li style="list-style-type:disc">14 &gt; 13 → direita</li></ul><p id="2414f3b9-a5e5-801a-975f-c4c983bd987f" class="">Inserimos <strong>14 como filho direito de 13</strong>.</p><p id="2414f3b9-a5e5-801d-8144-d29f9546a518" class=""><strong>Fatores de balanceamento</strong>:</p><ul id="2414f3b9-a5e5-80f9-9abb-c76c70f74851" class="bulleted-list"><li style="list-style-type:disc">13 → FB = -1</li></ul><ul id="2414f3b9-a5e5-8089-9a4b-d1ab4693a1fb" class="bulleted-list"><li style="list-style-type:disc">12 → FB = -2 → <strong>violação detectada</strong></li></ul><ul id="2414f3b9-a5e5-807c-b58b-d9759169937b" class="bulleted-list"><li style="list-style-type:disc">Caminho: 10 → 12 → 13 → 14</li></ul><p id="2414f3b9-a5e5-80fe-8eba-ea654e931b35" class="">Caso <strong>RR</strong> em 12 → Rotação simples à esquerda.</p><hr id="2414f3b9-a5e5-803f-a00c-fde6ec98263b"/><h3 id="2414f3b9-a5e5-8046-9543-f7a4399b7029" class="">Rotação à esquerda (RR) em 12:</h3><p id="2414f3b9-a5e5-8084-be1e-db12f1309896" class="">Transforma:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80ca-b45a-dd60d0113507" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">		12
+      \
+      13
+        \
+        14
+</code></pre><p id="2414f3b9-a5e5-8059-8acd-c1ca3325afaa" class="">Em:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-803b-ae32-ca39c48811b2" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">		13
+   /  \
+ 12   14
+</code></pre><p id="2414f3b9-a5e5-80cf-822a-f6859b7d9053" class="">Agora substituímos o 12 da árvore principal por essa nova subárvore com raiz <strong>13</strong>.</p><h3 id="2414f3b9-a5e5-8042-8dac-fe7f54f162f3" class="">Árvore após inserção de <strong>14</strong> (com rotação RR):</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d9-af3b-f9891a2bf17d" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">				 16
+       /    \
+     10      20
+    /  \     / \
+   8   13  17  25
+       /  \
+     12   14
+</code></pre><hr id="2414f3b9-a5e5-8056-8d67-d3be0a6bd588"/><h2 id="2414f3b9-a5e5-80ba-b88a-eb7bf8abd22e" class="">Inserção de <strong>11</strong></h2><p id="2414f3b9-a5e5-8055-9a49-c3cba8964d10" class=""><strong>Caminho de inserção</strong>:</p><ul id="2414f3b9-a5e5-8093-9157-dc46e3b5e7d2" class="bulleted-list"><li style="list-style-type:disc">11 &lt; 16 → esquerda</li></ul><ul id="2414f3b9-a5e5-805e-a30f-f7e9c94fe785" class="bulleted-list"><li style="list-style-type:disc">11 &gt; 10 → direita</li></ul><ul id="2414f3b9-a5e5-80ad-bcad-e55c7d96481b" class="bulleted-list"><li style="list-style-type:disc">11 &lt; 13 → esquerda</li></ul><ul id="2414f3b9-a5e5-8099-991d-f213dc170e03" class="bulleted-list"><li style="list-style-type:disc">11 &lt; 12 → esquerda</li></ul><p id="2414f3b9-a5e5-80f8-9f7b-f0346d56073c" class="">Inserimos <strong>11 como filho esquerdo de 12</strong></p><p id="2414f3b9-a5e5-805f-8a67-cc86c21464ae" class=""><strong>Fatores de balanceamento</strong>:</p><ul id="2414f3b9-a5e5-80fd-b8b7-eece84e517b7" class="bulleted-list"><li style="list-style-type:disc">12 → FB = +1</li></ul><ul id="2414f3b9-a5e5-8058-a883-ee3e56d7c485" class="bulleted-list"><li style="list-style-type:disc">13 → FB = +1 (subárvore esquerda cresceu)</li></ul><ul id="2414f3b9-a5e5-8025-b194-c376b21b77a4" class="bulleted-list"><li style="list-style-type:disc">10 → FB = -1</li></ul><ul id="2414f3b9-a5e5-80db-b6f2-e2716614c706" class="bulleted-list"><li style="list-style-type:disc">16 → FB = 0</li></ul><p id="2414f3b9-a5e5-80ed-b1ae-ee7eeab2742b" class="">Todos FB ∈ [-1, 1], então <strong>não há rotação</strong>.</p><h3 id="2414f3b9-a5e5-80ec-a6de-e5abc56384de" class="">Árvore final após inserção de <strong>11</strong>:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80e9-93ba-c91400de863a" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">				16
+       /    \
+     10      20
+    /  \     / \
+   8   13   17  25
+       /  \
+     12   14
+     /
+   11</code></pre><h1 id="2414f3b9-a5e5-80f8-950f-d462bbe06a74" class="">Q6)</h1><p id="2414f3b9-a5e5-8030-adee-d1816f4f8907" class="">Insira os elementos {1,2,3,4,5,6,7,8}, nesta ordem, em uma árvore AVL. Mostre o passo-a-passo.</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

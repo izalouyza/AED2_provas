@@ -1,0 +1,1367 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Heap</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-default { background-color: rgba(84, 72, 49, 0.08); }
+.select-value-color-gray { background-color: rgba(84, 72, 49, 0.15); }
+.select-value-color-brown { background-color: rgba(210, 162, 141, 0.35); }
+.select-value-color-orange { background-color: rgba(224, 124, 57, 0.27); }
+.select-value-color-yellow { background-color: rgba(236, 191, 66, 0.39); }
+.select-value-color-green { background-color: rgba(123, 183, 129, 0.27); }
+.select-value-color-blue { background-color: rgba(93, 165, 206, 0.27); }
+.select-value-color-purple { background-color: rgba(168, 129, 197, 0.27); }
+.select-value-color-pink { background-color: rgba(225, 136, 179, 0.27); }
+.select-value-color-red { background-color: rgba(244, 171, 159, 0.4); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2414f3b9-a5e5-8072-933d-d16740c865c8" class="page sans"><header><h1 class="page-title">Heap</h1><p class="page-description"></p><table class="properties"><tbody></tbody></table></header><div class="page-body"><h1 id="2414f3b9-a5e5-80f7-beb2-f270c4a4b897" class="">Q1)</h1><p id="2414f3b9-a5e5-8032-b871-e87f0e199a93" class="">Considere uma HEAP como a mostrada logo abaixo para realizar as operações na ordem que são solicitadas:</p><p id="2414f3b9-a5e5-8078-891f-d917c7e47bee" class=""><br/>HEAP = {97, 88, 84, 72, 55, 44, 37, 30, 26, 12, 18, 20, 25, 14, 8, 10, 6, 15, 5, 9}<br/></p><p id="2414f3b9-a5e5-80f9-8693-ff2f098dacb6" class=""><br/>(a) Modifique a prioridade de 20 para 40;<br/></p><h1 id="2414f3b9-a5e5-808c-87c9-fab9cd133ff1" class=""><strong>Heap inicial (max-heap):</strong></h1><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8001-b0b2-db9e746e5aa8" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+                  97
+                /    \
+             88       84
+           /    \    /   \
+        72     55  44    37
+       /  \    / \  / \  /  \
+     30  26 12 18 20 25 14  8
+    /  \  / \
+  10   6 15  5  9
+</code></pre><hr id="2414f3b9-a5e5-80ce-b738-efa70aed4112"/><ul id="2414f3b9-a5e5-80b3-b457-f24a641dab08" class="bulleted-list"><li style="list-style-type:disc">20 está aqui:</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8034-a6b7-d803fd07525a" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+...    44
+       /  \
+    20    25</code></pre><ul id="2414f3b9-a5e5-8033-8d5f-f29c3a723803" class="bulleted-list"><li style="list-style-type:disc">Atualizamos 20 → 40</li></ul><ul id="2414f3b9-a5e5-80af-906b-d8317f7b3208" class="bulleted-list"><li style="list-style-type:disc">Como 40 &lt; 44 (pai), não sobe.</li></ul><p id="2414f3b9-a5e5-80e0-a9fe-ebc5641cc99e" class=""><strong>Heap após a modificação:</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-802c-b10d-e58b72e148d9" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+                  97
+                /    \
+             88       84
+           /    \    /   \
+        72     55  44    37
+       /  \    / \  / \  /  \
+     30  26 12 18 40 25 14  8
+    /  \  / \
+  10   6 15  5  9</code></pre><p id="2414f3b9-a5e5-80ff-bfb3-edeec5180f23" class=""><br/>(b) Modifique a prioridade de 9 para 99;<br/></p><ul id="2414f3b9-a5e5-8093-b83e-dc06c887f065" class="bulleted-list"><li style="list-style-type:disc">9 está aqui:</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-804a-b4db-fbde3808808a" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+       15
+      /  \
+     5    9</code></pre><ul id="2414f3b9-a5e5-80d0-b922-f8b55c969c3d" class="bulleted-list"><li style="list-style-type:disc">Atualizamos 9 → 99 e vamos subir:</li></ul><p id="2414f3b9-a5e5-806d-b8c4-d505963e729d" class=""><strong>Subida:</strong></p><ul id="2414f3b9-a5e5-8039-b3c6-d49153848043" class="bulleted-list"><li style="list-style-type:disc">99 &gt; 12 (pai):</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-809f-bc44-c2d8a43724ea" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+       15
+      /  \
+     5   99  ← sobe</code></pre><ul id="2414f3b9-a5e5-803e-ac60-ed076fc0595e" class="bulleted-list"><li style="list-style-type:disc">99 &gt; 55 (pai):</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-809b-be28-d78ba5e6b131" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+       18
+      /  \
+    99   25  ← sobe mais</code></pre><ul id="2414f3b9-a5e5-8046-9548-d902b66bdbaf" class="bulleted-list"><li style="list-style-type:disc">99 &gt; 88 (pai):</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-801f-a32e-d9991d8bfc2d" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+     88
+    /   \
+  99    84   ← sobe mais</code></pre><ul id="2414f3b9-a5e5-80df-b4c7-c029ab992cf9" class="bulleted-list"><li style="list-style-type:disc">99 &gt; 97 (raiz):</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80c0-ab30-d37fe17f15bd" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+    97
+   /   \
+  99   84  ← sobe até raiz</code></pre><ul id="2414f3b9-a5e5-80a8-8bca-f56ce3a8b0e7" class="bulleted-list"><li style="list-style-type:disc">Finalmente 99 vira raiz, 97 desce:</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8056-b697-f1c4df687886" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+                  99
+                /    \
+             97       84
+           /    \    /   \
+        72     55  44    37
+       /  \    / \  / \  /  \
+     30  26 12 18 40 25 14  8
+    /  \  / \
+  10   6 15  5  9 (agora 9 não está mais aqui)</code></pre><p id="2414f3b9-a5e5-80f4-9e34-d04deca3c188" class=""><br/>(c) Modifique a prioridade e 97 para 11;<br/></p><ul id="2414f3b9-a5e5-8085-a2e2-d1c4efe50e44" class="bulleted-list"><li style="list-style-type:disc">97 está aqui (índice filho da raiz):</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80a0-995a-cf2a0bd26e14" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">              99
+             /   \
+          97      84</code></pre><ul id="2414f3b9-a5e5-80bc-9f1f-d42e1216b9c9" class="bulleted-list"><li style="list-style-type:disc">Atualizamos 97 → 11, e agora desce (heapify-down):</li></ul><p id="2414f3b9-a5e5-8071-9467-f46a77299dd0" class=""><strong>Descida:</strong></p><ul id="2414f3b9-a5e5-80f6-897b-cff955753f7a" class="bulleted-list"><li style="list-style-type:disc">11 &lt; 88 (maior filho entre 72 e 88):</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80dd-bc6e-eb5cbda8b266" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+              99
+             /   \
+          88      84
+         /  \
+       72   11  ← desceu</code></pre><ul id="2414f3b9-a5e5-8002-bb9a-ee803a904de3" class="bulleted-list"><li style="list-style-type:disc">11 &lt; 55 (maior filho entre 12 e 55):</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d8-b21f-e06b999b6a61" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+          88
+         /  \
+       72   55
+            /
+           11  ← desceu</code></pre><ul id="2414f3b9-a5e5-8027-b8a3-c5219b0d9f73" class="bulleted-list"><li style="list-style-type:disc">11 &lt; 12 (filho único):</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8088-aa07-c565e158935e" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           55
+          /
+        12
+       /
+     11  ← desceu</code></pre><ul id="2414f3b9-a5e5-8086-ac70-d23a82ba82a6" class="bulleted-list"><li style="list-style-type:disc">Não pode descer mais (não tem filhos maiores).</li></ul><p id="2414f3b9-a5e5-800e-bfa6-ed63e94ccf7c" class="">
+</p><p id="2414f3b9-a5e5-8021-b6cd-c713ea093fcf" class="">(d) Remova o elemento com maior prioridade;</p><ul id="2414f3b9-a5e5-8093-83bc-e992c69d7161" class="bulleted-list"><li style="list-style-type:disc">Troca a raiz com o último elemento (9).</li></ul><ul id="2414f3b9-a5e5-8082-b656-cc06564d4bf6" class="bulleted-list"><li style="list-style-type:disc">Remove o último elemento.</li></ul><ul id="2414f3b9-a5e5-80d4-80db-c2efd09abaef" class="bulleted-list"><li style="list-style-type:disc">Heapify-down a partir da raiz com valor 9:</li></ul><p id="2414f3b9-a5e5-805b-8562-c5fbe6f4708b" class=""><strong>Passos de descida:</strong></p><ol type="1" id="2414f3b9-a5e5-8055-bef8-c53d8f916fba" class="numbered-list" start="1"><li>9 &lt; 88 (maior filho):</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8065-84c2-e123a32472bf" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             88
+            /   \
+          72     84
+         /  \
+       30    55
+            /
+          12
+         /
+       11
+      /
+     9  ← desceu até aqui
+</code></pre><ol type="1" id="2414f3b9-a5e5-80b5-9f19-f222bfc027a8" class="numbered-list" start="1"><li>9 &lt; 72 (filho maior na esquerda):</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-806f-9b53-ceb70772e2ac" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+          72
+         /  \
+       30   55
+      /
+     9  ← continua descendo</code></pre><ol type="1" id="2414f3b9-a5e5-80f3-a3b8-d0a3fbc4f5f7" class="numbered-list" start="1"><li>9 &lt; 30:</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80b1-a43c-d4f08a42f8aa" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         30
+        /
+       9</code></pre><ol type="1" id="2414f3b9-a5e5-80f5-aeba-d13a7b45e2fc" class="numbered-list" start="1"><li>9 &lt; 10 (filho direito do 30?):</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-802c-b3af-ea24dbb25535" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+      30
+     /  \
+    9   26
+   /
+ 10 ← chegou aqui, sem mais filhos</code></pre><p id="2414f3b9-a5e5-803f-9142-f213f125e03a" class=""><br/>(e) Remova o elemento com maior prioridade;<br/></p><ul id="2414f3b9-a5e5-80cf-8d07-fe9316e446e4" class="bulleted-list"><li style="list-style-type:disc">Troca a raiz com último elemento (5).</li></ul><ul id="2414f3b9-a5e5-80ae-b4a1-c43b2e742673" class="bulleted-list"><li style="list-style-type:disc">Remove o último.</li></ul><ul id="2414f3b9-a5e5-807a-97ed-f21797058a2b" class="bulleted-list"><li style="list-style-type:disc">Heapify-down a partir da raiz com 5:</li></ul><p id="2414f3b9-a5e5-80a3-a672-fd700e147ae6" class=""><strong>Passos de descida:</strong></p><ol type="1" id="2414f3b9-a5e5-80c6-907f-c7c53dd11a33" class="numbered-list" start="1"><li>5 &lt; 84 (maior filho entre 72 e 84):</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8051-8c56-dbf8a2af8823" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+              84
+             /   \
+           72     44
+          /  \
+        30    55</code></pre><ol type="1" id="2414f3b9-a5e5-8068-a468-eae4341fb0b2" class="numbered-list" start="1"><li>5 &lt; 72:</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8024-b993-f594e9b7db10" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+          72
+         /  \
+       30    55
+      /
+     5  ← desceu até aqui</code></pre><ol type="1" id="2414f3b9-a5e5-8035-9e1d-e7aa7effdd8c" class="numbered-list" start="1"><li>5 &lt; 30:</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80fe-9f7f-c1277bb7ecee" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        30
+       /  \
+      5   26</code></pre><ol type="1" id="2414f3b9-a5e5-8015-b0d0-dffdfb6cdcc2" class="numbered-list" start="1"><li>5 &lt; 10 (filho direito do 30):</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80c9-9c86-d27dbe0247b9" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+      30
+     /  \
+    5   26
+   /
+ 10</code></pre><p id="2414f3b9-a5e5-806a-be8e-f47ec6dec054" class="">Sem mais filhos, termina aqui.</p><p id="2414f3b9-a5e5-8025-8604-f96ef54dfe15" class=""><br/>Após cada operação certifique-se que a estrutura continua sendo uma HEAP.<br/></p><p id="2414f3b9-a5e5-80ab-8bc0-eee3b0808535" class="">
+</p><h1 id="2414f3b9-a5e5-80c9-b45d-f0c94b68e024" class="">Q2)</h1><p id="2414f3b9-a5e5-8079-849a-fb1f8a3b8d3a" class="">Julgue as afirmações seguintes:<br/>(a) Toda HEAP-MAX é uma lista em ordem decrescente.<br/>(b) Toda lista em ordem decrescente é uma HEAP-MAX.<br/>(c) O menor elemento é o último elemento da lista.<br/>(d) Um elemento de um nível menor tem prioridade menor do que todos os de níveis acima.<br/>(e) A HEAP-MIN pode ser construída a partir de uma HEAP-MAX invertendo o vetor de prioridades.<br/></p><h3 id="2414f3b9-a5e5-80a8-ad8c-d9629663dcda" class=""><strong>(a) Toda HEAP-MAX é uma lista em ordem decrescente.</strong></h3><p id="2414f3b9-a5e5-80d2-9332-f62daf0d6600" class=""><strong>Falso.</strong></p><ul id="2414f3b9-a5e5-80e9-a46a-f16793ddb2ba" class="bulleted-list"><li style="list-style-type:disc">Uma heap-max garante que <strong>o pai é maior que os filhos</strong>, mas não que os elementos estejam ordenados sequencialmente como uma lista.</li></ul><ul id="2414f3b9-a5e5-80a4-b9ba-da5c07e48266" class="bulleted-list"><li style="list-style-type:disc">Por exemplo, a raiz é o maior elemento, mas os filhos não precisam estar em ordem decrescente entre si.</li></ul><ul id="2414f3b9-a5e5-80c2-8d4d-de97e871cd0f" class="bulleted-list"><li style="list-style-type:disc">Portanto, a heap é uma árvore parcialmente ordenada, <strong>não uma lista ordenada</strong>.</li></ul><hr id="2414f3b9-a5e5-8074-927d-ee94f0bf7605"/><h3 id="2414f3b9-a5e5-804d-a2b9-cceeed687920" class=""><strong>(b) Toda lista em ordem decrescente é uma HEAP-MAX.</strong></h3><p id="2414f3b9-a5e5-8084-9261-ebd4ca03db78" class=""><strong>Falso.</strong></p><ul id="2414f3b9-a5e5-804f-8d12-eebec2e74dd1" class="bulleted-list"><li style="list-style-type:disc">Uma lista em ordem decrescente não necessariamente satisfaz a propriedade heap.</li></ul><ul id="2414f3b9-a5e5-8084-b4ab-eb0922dc48fe" class="bulleted-list"><li style="list-style-type:disc">Na representação de heap em vetor, os filhos de um índice podem não ser menores que o pai.</li></ul><ul id="2414f3b9-a5e5-8052-b616-fe5cd7f58359" class="bulleted-list"><li style="list-style-type:disc">Por exemplo, a lista <code>[10, 9, 8, 7, 6]</code> está decrescente, mas pode não formar uma heap se os filhos não obedecerem a propriedade de heap.</li></ul><hr id="2414f3b9-a5e5-80d0-8766-d906a6060239"/><h3 id="2414f3b9-a5e5-800c-997c-feaae3b9c07b" class=""><strong>(c) O menor elemento é o último elemento da lista.</strong></h3><p id="2414f3b9-a5e5-80ae-97a3-fa096e375bb4" class=""><strong>Falso.</strong></p><ul id="2414f3b9-a5e5-801a-b6ba-c31e2dc356f0" class="bulleted-list"><li style="list-style-type:disc">Na heap-max, o menor elemento pode estar em qualquer posição, geralmente nas folhas, mas não necessariamente no último elemento do vetor.</li></ul><ul id="2414f3b9-a5e5-80b3-8448-c9a4e78db78a" class="bulleted-list"><li style="list-style-type:disc">O vetor da heap não é uma lista ordenada, então o menor elemento não está garantidamente no último índice.</li></ul><hr id="2414f3b9-a5e5-80ab-b526-ef73ce39cb7b"/><h3 id="2414f3b9-a5e5-803b-811d-e9850161d036" class=""><strong>(d) Um elemento de um nível menor tem prioridade menor do que todos os de níveis acima.</strong></h3><p id="2414f3b9-a5e5-8088-a2c5-d2992fd08818" class=""><strong>Verdadeiro.</strong></p><ul id="2414f3b9-a5e5-8031-bc68-f72bb54589ca" class="bulleted-list"><li style="list-style-type:disc">Em uma heap-max, os níveis mais altos contêm elementos com prioridades maiores ou iguais às dos níveis abaixo.</li></ul><ul id="2414f3b9-a5e5-804b-b88e-ffaa8c149ad5" class="bulleted-list"><li style="list-style-type:disc">Ou seja, o valor do pai é sempre maior ou igual ao dos filhos.</li></ul><ul id="2414f3b9-a5e5-800f-9934-f4b98cee4633" class="bulleted-list"><li style="list-style-type:disc">Então, qualquer nó em um nível menor (mais profundo) terá prioridade menor ou igual a todos os seus ancestrais nos níveis acima.</li></ul><hr id="2414f3b9-a5e5-806a-a841-c233fb855435"/><h3 id="2414f3b9-a5e5-801a-b554-e482a3b25e91" class=""><strong>(e) A HEAP-MIN pode ser construída a partir de uma HEAP-MAX invertendo o vetor de prioridades.</strong></h3><p id="2414f3b9-a5e5-802c-a1d5-ffe68fde0489" class=""><strong>Falso.</strong></p><ul id="2414f3b9-a5e5-8091-81a0-ef902d0700ca" class="bulleted-list"><li style="list-style-type:disc">Apenas inverter o vetor da heap-max não garante a propriedade heap-min.</li></ul><ul id="2414f3b9-a5e5-8031-9f0f-e5c732e6b417" class="bulleted-list"><li style="list-style-type:disc">A heap-min exige que o pai seja menor que os filhos, o que não é garantido ao inverter o vetor.</li></ul><ul id="2414f3b9-a5e5-80d9-bed2-d6fe8f9c89b4" class="bulleted-list"><li style="list-style-type:disc">Para construir uma heap-min, precisa-se reorganizar o vetor e aplicar o algoritmo heapify.</li></ul><h1 id="2414f3b9-a5e5-8098-8a6e-c59a8bbc94d7" class="">Q3)</h1><p id="2414f3b9-a5e5-80cc-b395-d15f2c8d28d1" class="">Construa uma HEAP-MIN com os elementos inseridos na HEAP na ordem indicada:</p><p id="2414f3b9-a5e5-80ca-a469-d81d21ad529b" class=""><br/>X = {92, 24, 67, 30, 61, 58, 36, 33, 14, 81, 55, 16, 26, 51, 39, 15, 82, 49, 90, 84}<br/></p><h1 id="2414f3b9-a5e5-80d8-9d0f-f8005ec3a9b3" class=""><strong>Passo 1: Inserir 92</strong></h1><p id="2414f3b9-a5e5-8026-a424-e1c54ebf5e11" class="">Heap só com o elemento:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80be-b0f4-d2c18cdd1057" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+92</code></pre><hr id="2414f3b9-a5e5-8062-a3c5-c66bf945e926"/><h1 id="2414f3b9-a5e5-80db-bce1-c5ff69ef5a60" class=""><strong>Passo 2: Inserir 24</strong></h1><p id="2414f3b9-a5e5-8014-91b0-dd7913168aac" class="">Heap:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-804f-8492-e65b599a2be8" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+    92
+   /
+  24</code></pre><p id="2414f3b9-a5e5-80c1-8e1d-ef8e4c6a3ebb" class="">Como 24 &lt; 92, fazemos heapify-up: troca 24 e 92.</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-804d-813c-e0d9d38734a1" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+    24
+   /
+  92</code></pre><hr id="2414f3b9-a5e5-8092-b19b-e68554ddf0e5"/><h1 id="2414f3b9-a5e5-8006-8c0b-c8f99363df0a" class=""><strong>Passo 3: Inserir 67</strong></h1><p id="2414f3b9-a5e5-8058-a376-e6bbab5ae80a" class="">Heap antes do heapify:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8042-a2a8-c18c4b20c8f1" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+    24
+   /  \
+  92   67</code></pre><p id="2414f3b9-a5e5-803e-aac2-e7995066ed95" class="">67 &gt; 24, não sobe. OK.</p><hr id="2414f3b9-a5e5-80ae-a102-f95a8e4db8a3"/><h1 id="2414f3b9-a5e5-8067-9b33-f568a9da0094" class=""><strong>Passo 4: Inserir 30</strong></h1><p id="2414f3b9-a5e5-80aa-863c-f4c99893f439" class="">Inserido como filho esquerdo do 92:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8013-8bb5-fdf771e1c659" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+      24
+     /  \
+   92    67
+  /
+ 30</code></pre><p id="2414f3b9-a5e5-8023-8962-c0f693c83be2" class="">30 &lt; 92, troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-806c-9516-ef064fa91ebb" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+      24
+     /  \
+   30    67
+  /
+ 92</code></pre><p id="2414f3b9-a5e5-80f5-92b1-e19a0b221748" class="">30 &gt; 24 (pai), não sobe mais.</p><hr id="2414f3b9-a5e5-8063-95cb-e25948d717f2"/><h1 id="2414f3b9-a5e5-809f-8416-e42e7b4ae277" class=""><strong>Passo 5: Inserir 61</strong></h1><p id="2414f3b9-a5e5-80ac-9487-c50d63dbd03a" class="">Inserido como filho direito do 30:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80fc-b691-ca4fb2e10a47" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+      24
+     /  \
+   30    67
+  /  \
+92   61</code></pre><p id="2414f3b9-a5e5-8026-b535-e89745a15e16" class="">61 &gt; 30, não sobe.</p><hr id="2414f3b9-a5e5-80c1-899f-eee32aeda511"/><h1 id="2414f3b9-a5e5-807b-8daa-fcac047a5ff9" class=""><strong>Passo 6: Inserir 58</strong></h1><p id="2414f3b9-a5e5-8015-803e-d1d27b885765" class="">Inserido como filho esquerdo do 67:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-804d-9434-c23f2fd93e0e" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+       24
+      /  \
+    30    67
+   /  \   /
+ 92   61 58</code></pre><p id="2414f3b9-a5e5-8004-a136-eada91de66c4" class="">58 &lt; 67, troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8065-99e4-c89de9736efe" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+       24
+      /  \
+    30    58
+   /  \   /
+ 92   61 67</code></pre><p id="2414f3b9-a5e5-807b-9191-de7982c0214c" class="">58 &gt; 24, não sobe mais.</p><hr id="2414f3b9-a5e5-80f2-b75d-c4b268b2876c"/><h1 id="2414f3b9-a5e5-80b2-b0b6-d0ab62c48819" class=""><strong>Passo 7: Inserir 36</strong></h1><p id="2414f3b9-a5e5-80c3-ba53-e8a5f046318d" class="">Inserido como filho direito do 67 (que agora está na posição da última inserção):</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-801b-880b-e923a9ffe523" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+       24
+      /  \
+    30    58
+   /  \   / \
+ 92   61 67  36</code></pre><p id="2414f3b9-a5e5-8045-80e7-cc68a34dcf76" class="">36 &lt; 58, troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-800c-80c4-f3bb224644b3" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+       24
+      /  \
+    30    36
+   /  \   / \
+ 92   61 67  58</code></pre><p id="2414f3b9-a5e5-80a7-add5-c5eafe3e1177" class="">36 &gt; 24, para.</p><hr id="2414f3b9-a5e5-80a7-adf7-debaeaa32f8d"/><h1 id="2414f3b9-a5e5-800d-b762-fc42b4bed478" class=""><strong>Passo 8: Inserir 33</strong></h1><p id="2414f3b9-a5e5-807d-b119-d6d0424dabc8" class="">Inserido como filho esquerdo do 92:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d7-b00f-ef062b0be6c4" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         24
+        /  \
+      30    36
+     /  \   / \
+   92   61 67  58
+  /
+ 33</code></pre><p id="2414f3b9-a5e5-80b2-b6e2-ee7f0f0a7040" class="">33 &lt; 92, troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8008-b9bc-e29bb333895f" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         24
+        /  \
+      30    36
+     /  \   / \
+   33   61 67  58
+  /
+ 92</code></pre><p id="2414f3b9-a5e5-8077-82b4-c99eed30c44a" class="">33 &gt; 30, para.</p><hr id="2414f3b9-a5e5-80d4-b201-cb6fe3fcb4f6"/><h1 id="2414f3b9-a5e5-80f4-9be0-ed41702355f4" class=""><strong>Passo 9: Inserir 14</strong></h1><p id="2414f3b9-a5e5-8065-a202-de5cbae09b16" class="">Inserido como filho direito do 33:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80f1-81f8-fd43aa3ec9b8" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         24
+        /  \
+      30    36
+     /  \   / \
+   33   61 67  58
+  /  \
+92   14</code></pre><p id="2414f3b9-a5e5-80b7-8376-feaf4d6c41a8" class="">14 &lt; 33, troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8061-a2fe-cfc24f26dff9" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         24
+        /  \
+      30    36
+     /  \   / \
+   14   61 67  58
+  /  \
+92   33</code></pre><p id="2414f3b9-a5e5-80ed-a49c-cf46848cc606" class="">14 &lt; 30, troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d7-a38b-ea143eb7f5ad" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         24
+        /  \
+      14    36
+     /  \   / \
+   30   61 67  58
+  /  \
+92   33</code></pre><p id="2414f3b9-a5e5-8013-99e6-c3540de8f2db" class="">14 &gt; 24? Não, 14 &lt; 24, troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-800b-8c90-c128385ebe41" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         14
+        /  \
+      24    36
+     /  \   / \
+   30   61 67  58
+  /  \
+92   33</code></pre><hr id="2414f3b9-a5e5-8092-b77e-fde6affb4ed2"/><h1 id="2414f3b9-a5e5-8082-a12a-db0be4d49ac8" class=""><strong>Passo 10: Inserir 81</strong></h1><p id="2414f3b9-a5e5-8008-b237-e707daed1cdf" class="">Inserido como filho esquerdo do 61:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80f4-ada9-d846d6f1814f" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         14
+        /  \
+      24    36
+     /  \   / \
+   30   61 67  58
+  /  \  /
+92   33 81</code></pre><p id="2414f3b9-a5e5-805f-9cc1-f2d78680143a" class="">81 &gt; 61, não sobe.</p><hr id="2414f3b9-a5e5-8088-a5c8-cf0a82681f1a"/><h1 id="2414f3b9-a5e5-803f-b13b-ee11b06e5241" class=""><strong>Passo 11: Inserir 55</strong></h1><p id="2414f3b9-a5e5-80f9-aafb-e6e12c2cbdcd" class="">Inserido como filho direito do 61:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8052-8333-ee31770e1b9a" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         14
+        /  \
+      24    36
+     /  \   / \
+   30   61 67  58
+  /  \  / \
+92   33 81 55</code></pre><p id="2414f3b9-a5e5-8040-9e29-c382e10b45dc" class="">55 &lt; 61? Não, 55 &lt; 61? 55 &lt; 61? 55 &lt; 61 é verdade (55 &lt; 61). 55 &lt; 61, troca?</p><p id="2414f3b9-a5e5-807b-a4f3-df71e7e89bfa" class="">Ops, nesse caso 55 &lt; 61 sim, então:</p><p id="2414f3b9-a5e5-8023-bfff-f26d2ec91081" class="">55 &lt; 61, troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8015-a0e3-d41465ff8ccb" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+         14
+        /  \
+      24    36
+     /  \   / \
+   30   55 67  58
+  /  \  / \
+92   33 81 61</code></pre><p id="2414f3b9-a5e5-8091-bcc6-c82ae22f7ce6" class="">55 &gt; 24? Não, 55 &gt; 24 sim, então para.</p><h1 id="2414f3b9-a5e5-80d0-aeba-efd775a1a643" class=""><strong>Passo 12: Inserir 16</strong></h1><p id="2414f3b9-a5e5-802c-8f80-f0417754f41c" class="">Inserido como filho esquerdo do 67:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-803f-b213-e42cb2535940" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  67    58
+   /  \   / \ / \
+ 92   33 81 61 16</code></pre><p id="2414f3b9-a5e5-8055-8761-dbdf2c982f19" class="">16 &lt; 67 → troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80cd-8812-db561007a474" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    58
+   /  \   / \ / \
+ 92   33 81 61 67</code></pre><p id="2414f3b9-a5e5-80dc-9bff-f751f9a62031" class="">16 &gt; 36 → não sobe mais.</p><hr id="2414f3b9-a5e5-8020-ab61-f70fd2998501"/><h1 id="2414f3b9-a5e5-80fd-9e79-e42285cc1926" class=""><strong>Passo 13: Inserir 26</strong></h1><p id="2414f3b9-a5e5-80b6-b9ac-ea03e5a8e5cc" class="">Inserido como filho direito do 67:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80ea-8bd6-d54e86d21f69" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    58
+   /  \   / \ / \
+ 92   33 81 61 67 26</code></pre><p id="2414f3b9-a5e5-80dc-bfec-f3b1059b509d" class="">26 &lt; 67 → troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8068-8159-ce709a2bf08c" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    58
+   /  \   / \ / \
+ 92   33 81 61 26 67</code></pre><p id="2414f3b9-a5e5-80ba-9629-c05f1de4e618" class="">26 &gt; 16 → não sobe mais.</p><hr id="2414f3b9-a5e5-807d-b5b6-d3cf0c967521"/><h1 id="2414f3b9-a5e5-80fd-86e5-d29a23244aab" class=""><strong>Passo 14: Inserir 51</strong></h1><p id="2414f3b9-a5e5-8038-a0f5-fbe0b6d5fc98" class="">Inserido como filho esquerdo do 58:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80db-a1dc-e31d88350669" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    58
+   /  \   / \ / \  / \
+ 92   33 81 61 26 67 51</code></pre><p id="2414f3b9-a5e5-80cb-8139-f96b9661a69f" class="">51 &lt; 58 → troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-808d-86e6-e3c47f27fbfe" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    51
+   /  \   / \ / \  / \
+ 92   33 81 61 26 67 58</code></pre><p id="2414f3b9-a5e5-80f4-96e4-ec43ef343ffa" class="">51 &gt; 36 → não sobe mais.</p><hr id="2414f3b9-a5e5-8059-be1d-f568a9eecb40"/><h1 id="2414f3b9-a5e5-8035-98e9-d4f1f9ba53a8" class=""><strong>Passo 15: Inserir 39</strong></h1><p id="2414f3b9-a5e5-8037-a9e9-e2e0bd50a1ba" class="">Inserido como filho direito do 58:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8029-9a2e-d518e4879b0b" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    51
+   /  \   / \ / \  / \
+ 92   33 81 61 26 67 58
+                     \
+                     39</code></pre><p id="2414f3b9-a5e5-805e-a62a-ea73e79693df" class="">39 &lt; 58 → troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8015-8ee9-c89ad53200a0" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    51
+   /  \   / \ / \  / \
+ 92   33 81 61 26 67 39
+                     \
+                     58</code></pre><p id="2414f3b9-a5e5-80d0-936e-da1a70fb4680" class="">39 &gt; 51 → não sobe mais.</p><hr id="2414f3b9-a5e5-8017-828f-d662688b2611"/><h1 id="2414f3b9-a5e5-8095-a1a8-ed3e468f4bf8" class=""><strong>Passo 16: Inserir 15</strong></h1><p id="2414f3b9-a5e5-804b-8dec-c941aa37bdce" class="">Inserido como filho esquerdo do 92:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80c3-9c8a-f2623fcea613" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    51
+   /  \   / \ / \  / \
+ 92   33 81 61 26 67 39
+ /
+15</code></pre><p id="2414f3b9-a5e5-8046-8fe8-c67bccf6e22c" class="">15 &lt; 92 → troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d6-9f5c-e01035055169" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    30    55  16    51
+   /  \   / \ / \  / \
+ 15   33 81 61 26 67 39
+ /
+92</code></pre><p id="2414f3b9-a5e5-80ff-b114-c9af57a4df98" class="">15 &lt; 30 → troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8069-a985-f2e383626709" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    15    55  16    51
+   /  \   / \ / \  / \
+ 30   33 81 61 26 67 39
+ /
+92</code></pre><p id="2414f3b9-a5e5-806b-b322-c5159ef5603b" class="">15 &gt; 24 → não sobe mais.</p><hr id="2414f3b9-a5e5-80c1-a5b4-ee35ec1a30b4"/><h1 id="2414f3b9-a5e5-8092-88cb-dea61b35be28" class=""><strong>Passo 17: Inserir 82</strong></h1><p id="2414f3b9-a5e5-804a-802a-e5bad0e015f9" class="">Inserido como filho direito do 33:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8092-92e7-fb021baea13f" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    15    55  16    51
+   /  \   / \ / \  / \
+ 30   33 81 61 26 67 39
+ / \    \
+92  82</code></pre><p id="2414f3b9-a5e5-809c-a944-e9b42c2e70d5" class="">82 &gt; 33 → não sobe.</p><hr id="2414f3b9-a5e5-80be-91a0-edeb39688e33"/><h1 id="2414f3b9-a5e5-80ab-8ffe-c2e2f68cef7d" class=""><strong>Passo 18: Inserir 49</strong></h1><p id="2414f3b9-a5e5-80ee-acde-d149b81a0613" class="">Inserido como filho esquerdo do 81:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8069-8df8-eecd05b785ea" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    15    55  16    51
+   /  \   / \ / \  / \
+ 30   33 81 61 26 67 39
+ / \    \  /
+92  82  49</code></pre><p id="2414f3b9-a5e5-800c-a67f-f92b36db1807" class="">49 &lt; 81 → troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80ae-871c-ea4d0c5ee63a" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    15    55  16    51
+   /  \   / \ / \  / \
+ 30   33 49 61 26 67 39
+ / \    \  /
+92  82  81</code></pre><p id="2414f3b9-a5e5-8068-852e-e5d7571c2c25" class="">49 &gt; 55 → não sobe.</p><hr id="2414f3b9-a5e5-80f3-a0f7-f4f216610c01"/><h1 id="2414f3b9-a5e5-8053-94d6-cad1e818a228" class=""><strong>Passo 19: Inserir 90</strong></h1><p id="2414f3b9-a5e5-80a3-9f03-fcf642b798aa" class="">Inserido como filho direito do 81:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-800b-a6c6-e1bd0b3c4cd2" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    15    55  16    51
+   /  \   / \ / \  / \
+ 30   33 49 61 26 67 39
+ / \    \  / \
+92  82  81 90</code></pre><p id="2414f3b9-a5e5-8032-967f-e64233d3561c" class="">90 &gt; 81 → não sobe.</p><hr id="2414f3b9-a5e5-8018-8fe2-c4187e0c02d3"/><h1 id="2414f3b9-a5e5-802c-8ef5-c24093659744" class=""><strong>Passo 20: Inserir 84</strong></h1><p id="2414f3b9-a5e5-8044-8392-dc9fc65fd8f3" class="">Inserido como filho esquerdo do 6:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-800b-aff0-e153a06d4237" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    15    55  16    51
+   /  \   / \ / \  / \
+ 30   33 49 61 26 67 39
+ / \    \  / \
+92  82  81 90
+/
+84</code></pre><p id="2414f3b9-a5e5-8024-bce3-ef6d1ab333e0" class="">84 &gt; 92 → não sobe.</p><hr id="2414f3b9-a5e5-80f3-b800-c15e9b4b9900"/><h2 id="2414f3b9-a5e5-80c4-96a9-f7e1b73146a1" class=""><strong>Final da heap-min com os 20 elementos:</strong></h2><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8083-9843-f03d55183779" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+           14
+          /   \
+       24       36
+      /  \     /   \
+    15    55  16    51
+   /  \   / \ / \  / \
+ 30   33 49 61 26 67 39
+ / \    \  / \
+92  82  81 90
+/
+84</code></pre><h1 id="2414f3b9-a5e5-8018-b081-c812ca8f013c" class="">Q4)</h1><p id="2414f3b9-a5e5-80e3-8899-e639e346804e" class="">Construa uma Heap a partir da lista L abaixo:<br/>L = {28, 33, 39, 60, 66, 70, 78, 95}<br/></p><h3 id="2414f3b9-a5e5-800b-afff-eab35076ed53" class="">Lista com índices começando em 1:</h3><table id="2414f3b9-a5e5-80ff-ab46-d66b76ebba4d" class="simple-table"><thead class="simple-table-header"><tr id="2414f3b9-a5e5-8085-8a96-c182648d1814"><th id="Pdxb" class="simple-table-header-color simple-table-header">Índice (i)</th><th id="p&gt;uY" class="simple-table-header-color simple-table-header">Valor</th></tr></thead><tbody><tr id="2414f3b9-a5e5-80f1-8378-ddc7bf346c6f"><td id="Pdxb" class="">1</td><td id="p&gt;uY" class="">28</td></tr><tr id="2414f3b9-a5e5-801e-9133-f40a409c24e1"><td id="Pdxb" class="">2</td><td id="p&gt;uY" class="">33</td></tr><tr id="2414f3b9-a5e5-80eb-85b2-d3b4696b9fce"><td id="Pdxb" class="">3</td><td id="p&gt;uY" class="">39</td></tr><tr id="2414f3b9-a5e5-8058-ac3f-c612bdf37ea6"><td id="Pdxb" class="">4</td><td id="p&gt;uY" class="">60</td></tr><tr id="2414f3b9-a5e5-80e5-8828-d76015018c99"><td id="Pdxb" class="">5</td><td id="p&gt;uY" class="">66</td></tr><tr id="2414f3b9-a5e5-803a-9635-c6591b69df9f"><td id="Pdxb" class="">6</td><td id="p&gt;uY" class="">70</td></tr><tr id="2414f3b9-a5e5-8094-b247-f7d670985e17"><td id="Pdxb" class="">7</td><td id="p&gt;uY" class="">78</td></tr><tr id="2414f3b9-a5e5-80f5-8d8c-f26cfb95c005"><td id="Pdxb" class="">8</td><td id="p&gt;uY" class="">95</td></tr></tbody></table><hr id="2414f3b9-a5e5-807e-9c46-d89129dff3f2"/><h3 id="2414f3b9-a5e5-8041-a1f3-e6f80baa6797" class="">Verificação com as fórmulas (índice começando em 1):</h3><h3 id="2414f3b9-a5e5-8041-95f3-c0756e6e0b1f" class="">Fórmulas:</h3><ul id="2414f3b9-a5e5-800a-aa55-dd4e9700f0c7" class="bulleted-list"><li style="list-style-type:disc">Pai de <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>=</mo><mrow><mo fence="true">⌊</mo><mfrac><mi>i</mi><mn>2</mn></mfrac><mo fence="true">⌋</mo></mrow></mrow><annotation encoding="application/x-tex"> i=\left\lfloor \frac{i}{2} \right\rfloor</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2057em;vertical-align:-0.35em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">⌊</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8557em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">⌋</span></span></span></span></span></span></span><span>﻿</span></span></li></ul><ul id="2414f3b9-a5e5-803a-8c50-ffe0080f9299" class="bulleted-list"><li style="list-style-type:disc">Filho esquerdo de <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>=</mo><mn>2</mn><mi>i</mi></mrow><annotation encoding="application/x-tex">i= 2i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord">2</span><span class="mord mathnormal">i</span></span></span></span></span><span>﻿</span></span></li></ul><ul id="2414f3b9-a5e5-8056-8596-dc7328719e13" class="bulleted-list"><li style="list-style-type:disc">Filho direito de <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>=</mo><mn>2</mn><mi>i</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">i= 2i+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7429em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></span><span>﻿</span></span></li></ul><hr id="2414f3b9-a5e5-809b-a110-c210892e9e8b"/><p id="2414f3b9-a5e5-8006-95bf-e2a31faa3981" class="">Vamos montar a árvore:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80a0-9cc0-c999c9f77ca4" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             1: 28
+           /         \
+      2: 33           3: 39
+     /    \          /     \
+4: 60   5: 66     6: 70   7: 78
+   /
+8: 95
+
+</code></pre><hr id="2414f3b9-a5e5-8047-b254-c105469e613d"/><h3 id="2414f3b9-a5e5-8023-8879-e9d4ef274c5a" class="">Verificação se é <strong>Heap Mínima</strong>:</h3><ul id="2414f3b9-a5e5-80ab-91be-ee53b65434fb" class="bulleted-list"><li style="list-style-type:disc">28 ≤ 33 (ok), 28 ≤ 39 (ok)</li></ul><ul id="2414f3b9-a5e5-80c1-914d-d56473ede546" class="bulleted-list"><li style="list-style-type:disc">33 ≤ 60 (ok), 33 ≤ 66 (ok)</li></ul><ul id="2414f3b9-a5e5-8031-9b30-e276ec40fe7c" class="bulleted-list"><li style="list-style-type:disc">39 ≤ 70 (ok), 39 ≤ 78 (ok)</li></ul><ul id="2414f3b9-a5e5-80e4-b691-f49322b3ba81" class="bulleted-list"><li style="list-style-type:disc">60 ≤ 95 (ok)</li></ul><p id="2414f3b9-a5e5-80a1-8bcc-c00707f172bf" class=""><strong>Todos os pais são menores que os filhos</strong> → <strong>heap mínima válida!</strong></p><hr id="2414f3b9-a5e5-80e9-9079-d7b239b68646"/><h3 id="2414f3b9-a5e5-80de-9153-db316f2f8cc3" class="">Resultado final: Heap mínima com índice começando em 1</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8080-99e3-eb370c0213f1" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             28 (1)
+           /          \
+       33 (2)         39 (3)
+     /      \        /     \
+ 60 (4)   66 (5)  70 (6)  78 (7)
+  /
+95 (8)
+</code></pre><h1 id="2414f3b9-a5e5-80bf-8101-c4470ebb3d5e" class="">Q5)</h1><p id="2414f3b9-a5e5-80b6-9a64-d014ef8d9b4c" class="">Verifique se as sequências correspondem a uma HEAP:<br/><br/></p><p id="2414f3b9-a5e5-80b4-87bb-e927db26942c" class="">33 32 28 31 26 29 25 30 27<br/>33 32 28 31 29 26 25 30 27<br/></p><h2 id="2414f3b9-a5e5-8029-9451-e29032389a4a" class="">Primeira sequência:</h2><p id="2414f3b9-a5e5-801c-aeeb-c1eaeeef542a" class=""><strong>33 32 28 31 26 29 25 30 27</strong></p><table id="2414f3b9-a5e5-8054-8c90-ca3613f863d2" class="simple-table"><thead class="simple-table-header"><tr id="2414f3b9-a5e5-80d5-b942-fa5e5ed9e4bf"><th id="GFsq" class="simple-table-header-color simple-table-header">Índice iii</th><th id="{qPH" class="simple-table-header-color simple-table-header">Valor</th><th id="i@G{" class="simple-table-header-color simple-table-header">Filho esquerdo (2i)</th><th id="Yz;w" class="simple-table-header-color simple-table-header">Filho direito (2i+1)</th><th id="W?}p" class="simple-table-header-color simple-table-header">Verificação</th></tr></thead><tbody><tr id="2414f3b9-a5e5-8057-b5e9-d942ceaebde3"><td id="GFsq" class="">1</td><td id="{qPH" class="">33</td><td id="i@G{" class="">32 (2)</td><td id="Yz;w" class="">28 (3)</td><td id="W?}p" class="">✅ 33 ≥ 32, 28</td></tr><tr id="2414f3b9-a5e5-809f-aa18-ec93f32088ae"><td id="GFsq" class="">2</td><td id="{qPH" class="">32</td><td id="i@G{" class="">31 (4)</td><td id="Yz;w" class="">26 (5)</td><td id="W?}p" class="">✅ 32 ≥ 31, 26</td></tr><tr id="2414f3b9-a5e5-8080-ab21-c2bfbc373a36"><td id="GFsq" class="">3</td><td id="{qPH" class="">28</td><td id="i@G{" class="">29 (6)</td><td id="Yz;w" class="">25 (7)</td><td id="W?}p" class="">❌ <strong>28 &lt; 29</strong></td></tr><tr id="2414f3b9-a5e5-8048-b266-c10c7feaf60c"><td id="GFsq" class="">4</td><td id="{qPH" class="">31</td><td id="i@G{" class="">30 (8)</td><td id="Yz;w" class="">27 (9)</td><td id="W?}p" class="">✅ 31 ≥ 30, 27</td></tr><tr id="2414f3b9-a5e5-802c-ab4b-e21849eb55b8"><td id="GFsq" class="">5</td><td id="{qPH" class="">26</td><td id="i@G{" class="">—</td><td id="Yz;w" class="">—</td><td id="W?}p" class="">✅</td></tr><tr id="2414f3b9-a5e5-8001-9e26-ecc2431742c7"><td id="GFsq" class="">6</td><td id="{qPH" class="">29</td><td id="i@G{" class="">—</td><td id="Yz;w" class="">—</td><td id="W?}p" class="">✅</td></tr><tr id="2414f3b9-a5e5-8034-9791-c27fc4e4cd8e"><td id="GFsq" class="">7</td><td id="{qPH" class="">25</td><td id="i@G{" class="">—</td><td id="Yz;w" class="">—</td><td id="W?}p" class="">✅</td></tr><tr id="2414f3b9-a5e5-8061-9d20-fd2e5ccb1fc4"><td id="GFsq" class="">8</td><td id="{qPH" class="">30</td><td id="i@G{" class="">—</td><td id="Yz;w" class="">—</td><td id="W?}p" class="">✅</td></tr><tr id="2414f3b9-a5e5-8042-9805-c59a1681a46d"><td id="GFsq" class="">9</td><td id="{qPH" class="">27</td><td id="i@G{" class="">—</td><td id="Yz;w" class="">—</td><td id="W?}p" class="">✅</td></tr></tbody></table><p id="2414f3b9-a5e5-800b-a642-eba9c3f4ee45" class=""><strong>Não é uma heap máxima</strong>, pois 28 &lt; 29 (índice 3 e 6).</p><hr id="2414f3b9-a5e5-80ac-b9a1-eb521d83bcc8"/><h2 id="2414f3b9-a5e5-8068-8080-e77f2b4f5b2d" class="">Segunda sequência:</h2><p id="2414f3b9-a5e5-8060-8f14-cf8ba799b630" class=""><strong>33 32 28 31 29 26 25 30 27</strong></p><table id="2414f3b9-a5e5-8090-87b2-e054046b521d" class="simple-table"><thead class="simple-table-header"><tr id="2414f3b9-a5e5-80fd-bbaa-c64688ba9573"><th id="kXLj" class="simple-table-header-color simple-table-header">Índice iii</th><th id="&lt;ENy" class="simple-table-header-color simple-table-header">Valor</th><th id="JXo@" class="simple-table-header-color simple-table-header">Filho esquerdo (2i)</th><th id="ptxR" class="simple-table-header-color simple-table-header">Filho direito (2i+1)</th><th id="KtQf" class="simple-table-header-color simple-table-header">Verificação</th></tr></thead><tbody><tr id="2414f3b9-a5e5-8068-99ac-f15bfe2b72ab"><td id="kXLj" class="">1</td><td id="&lt;ENy" class="">33</td><td id="JXo@" class="">32 (2)</td><td id="ptxR" class="">28 (3)</td><td id="KtQf" class="">✅ 33 ≥ 32, 28</td></tr><tr id="2414f3b9-a5e5-8008-9083-f95b5133a81e"><td id="kXLj" class="">2</td><td id="&lt;ENy" class="">32</td><td id="JXo@" class="">31 (4)</td><td id="ptxR" class="">29 (5)</td><td id="KtQf" class="">✅ 32 ≥ 31, 29</td></tr><tr id="2414f3b9-a5e5-80a3-8320-e4ad87b14205"><td id="kXLj" class="">3</td><td id="&lt;ENy" class="">28</td><td id="JXo@" class="">26 (6)</td><td id="ptxR" class="">25 (7)</td><td id="KtQf" class="">✅ 28 ≥ 26, 25</td></tr><tr id="2414f3b9-a5e5-8007-bbf8-cb940e09ff0c"><td id="kXLj" class="">4</td><td id="&lt;ENy" class="">31</td><td id="JXo@" class="">30 (8)</td><td id="ptxR" class="">27 (9)</td><td id="KtQf" class="">✅ 31 ≥ 30, 27</td></tr><tr id="2414f3b9-a5e5-8009-abee-e7f0cc219f6a"><td id="kXLj" class="">5</td><td id="&lt;ENy" class="">29</td><td id="JXo@" class="">—</td><td id="ptxR" class="">—</td><td id="KtQf" class="">✅</td></tr><tr id="2414f3b9-a5e5-801b-b051-cfb71b08aff4"><td id="kXLj" class="">6</td><td id="&lt;ENy" class="">26</td><td id="JXo@" class="">—</td><td id="ptxR" class="">—</td><td id="KtQf" class="">✅</td></tr><tr id="2414f3b9-a5e5-80be-b118-c22773479415"><td id="kXLj" class="">7</td><td id="&lt;ENy" class="">25</td><td id="JXo@" class="">—</td><td id="ptxR" class="">—</td><td id="KtQf" class="">✅</td></tr><tr id="2414f3b9-a5e5-8047-8277-d80bf9ecb9bb"><td id="kXLj" class="">8</td><td id="&lt;ENy" class="">30</td><td id="JXo@" class="">—</td><td id="ptxR" class="">—</td><td id="KtQf" class="">✅</td></tr><tr id="2414f3b9-a5e5-8053-8483-de963428bc34"><td id="kXLj" class="">9</td><td id="&lt;ENy" class="">27</td><td id="JXo@" class="">—</td><td id="ptxR" class="">—</td><td id="KtQf" class="">✅</td></tr></tbody></table><p id="2414f3b9-a5e5-80a6-9650-d5b3be2c4595" class=""><strong>É uma heap máxima válida</strong>.</p><hr id="2414f3b9-a5e5-8058-b29d-cc15bb9f4483"/><h2 id="2414f3b9-a5e5-80c2-bd5a-ce6ac8edaf72" class=""><strong>Conclusão:</strong></h2><ul id="2414f3b9-a5e5-80b0-b884-ddac8928ca23" class="bulleted-list"><li style="list-style-type:disc"><strong>1ª sequência:</strong> ❌ <strong>Não</strong> é uma heap máxima (erro em 28 &lt; 29)</li></ul><ul id="2414f3b9-a5e5-8044-8c47-fbe86f2515dd" class="bulleted-list"><li style="list-style-type:disc"><strong>2ª sequência:</strong> ✅ <strong>Sim</strong>, é uma heap máxima</li></ul><h1 id="2414f3b9-a5e5-80c2-a9ce-c5dddde67c7e" class="">Q6)</h1><p id="2414f3b9-a5e5-80a8-a0ec-e9eba62645e7" class="">Realize a inserção dos elementos L = {63, 55, 59} na Heap abaixo:<br/>H = {66 62 56 60 58 52 50 54}<br/></p><h3 id="2414f3b9-a5e5-8023-b8cc-eda77a9778bf" class="">Heap Inicial (índice começando em 1):</h3><table id="2414f3b9-a5e5-8034-a8f3-ea1182cee5a6" class="simple-table"><thead class="simple-table-header"><tr id="2414f3b9-a5e5-808f-92c5-ddb3981f62cd"><th id="QzUX" class="simple-table-header-color simple-table-header">Índice</th><th id="NAxK" class="simple-table-header-color simple-table-header">Valor</th></tr></thead><tbody><tr id="2414f3b9-a5e5-80f6-874f-ed6118ba372e"><td id="QzUX" class="">1</td><td id="NAxK" class="">66</td></tr><tr id="2414f3b9-a5e5-8012-b141-cad5e39d2a6e"><td id="QzUX" class="">2</td><td id="NAxK" class="">62</td></tr><tr id="2414f3b9-a5e5-80cd-88e6-cdad209d89c8"><td id="QzUX" class="">3</td><td id="NAxK" class="">56</td></tr><tr id="2414f3b9-a5e5-80f4-9f86-dc33b58ff302"><td id="QzUX" class="">4</td><td id="NAxK" class="">60</td></tr><tr id="2414f3b9-a5e5-80ea-a2a5-f9f5de745880"><td id="QzUX" class="">5</td><td id="NAxK" class="">58</td></tr><tr id="2414f3b9-a5e5-8028-9c1b-e64b07fbb4bc"><td id="QzUX" class="">6</td><td id="NAxK" class="">52</td></tr><tr id="2414f3b9-a5e5-8099-bdc5-fada9a53d617"><td id="QzUX" class="">7</td><td id="NAxK" class="">50</td></tr><tr id="2414f3b9-a5e5-80a2-a953-d33ace6771b3"><td id="QzUX" class="">8</td><td id="NAxK" class="">54</td></tr></tbody></table><hr id="2414f3b9-a5e5-80bc-8b6c-ee914af4cf8a"/><h2 id="2414f3b9-a5e5-80a2-b59c-d0929c331889" class="">Inserir 63</h2><ul id="2414f3b9-a5e5-8060-8cfa-fb2a5a2573f7" class="bulleted-list"><li style="list-style-type:disc">Insere no final → índice 9.</li></ul><ul id="2414f3b9-a5e5-80bd-9d0e-ec52f86aa5c4" class="bulleted-list"><li style="list-style-type:disc">H = {66, 62, 56, 60, 58, 52, 50, 54, <strong>63</strong>}</li></ul><ul id="2414f3b9-a5e5-804c-a929-c812a7893c02" class="bulleted-list"><li style="list-style-type:disc">Pai de 63 está em índice <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo fence="true">⌊</mo><mfrac><mn>9</mn><mn>2</mn></mfrac><mo fence="true">⌋</mo></mrow><mo>=</mo><mn>4</mn><mo>→</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">\left\lfloor \frac{9}{2} \right\rfloor = 4→ 60</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2em;vertical-align:-0.35em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">⌊</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">9</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">⌋</span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">60</span></span></span></span></span><span>﻿</span></span></li></ul><p id="2414f3b9-a5e5-8063-ae32-e4b5664a0bc2" class=""><strong>63 &gt; 60 → troca:</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-804b-943c-eaba26b7cf16" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+Troca 63 com 60:
+H = {66, 62, 56, 63, 58, 52, 50, 54, 60}
+
+</code></pre><ul id="2414f3b9-a5e5-80e2-8b72-da95e8721afb" class="bulleted-list"><li style="list-style-type:disc">Novo índice de 63: 4 → pai em índice 2 = 62</li></ul><p id="2414f3b9-a5e5-802e-9285-de77def56699" class=""><strong>63 &gt; 62 → troca:</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80cb-8973-eee03d0a78a9" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+Troca 63 com 62:
+H = {66, 63, 56, 62, 58, 52, 50, 54, 60}
+
+</code></pre><ul id="2414f3b9-a5e5-80fb-b542-e3eba27fa2a4" class="bulleted-list"><li style="list-style-type:disc">Novo índice de 63: 2 → pai em índice 1 = 66</li></ul><p id="2414f3b9-a5e5-8036-b6c2-f2b11010d203" class=""><strong>63 &lt; 66 → para.</strong></p><hr id="2414f3b9-a5e5-804b-b296-f0a6d0f68bd4"/><h2 id="2414f3b9-a5e5-80d4-b043-c41c52377b71" class="">Inserir 55</h2><ul id="2414f3b9-a5e5-809b-b75d-d818ab3b5895" class="bulleted-list"><li style="list-style-type:disc">Insere no final → índice 10</li></ul><ul id="2414f3b9-a5e5-809b-b815-e8a6cb640f04" class="bulleted-list"><li style="list-style-type:disc">H = {66, 63, 56, 62, 58, 52, 50, 54, 60, <strong>55</strong>}</li></ul><ul id="2414f3b9-a5e5-80c3-8f8e-e7f3a8fb529f" class="bulleted-list"><li style="list-style-type:disc">Pai de 55: índice <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo fence="true">⌊</mo><mfrac><mn>10</mn><mn>2</mn></mfrac><mo fence="true">⌋</mo></mrow><mo>=</mo><mn>5</mn><mo>→</mo><mn>58</mn></mrow><annotation encoding="application/x-tex">\left\lfloor \frac{10}{2} \right\rfloor = 5 → 58</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2em;vertical-align:-0.35em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">⌊</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">10</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">⌋</span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">58</span></span></span></span></span><span>﻿</span></span></li></ul><p id="2414f3b9-a5e5-808b-8790-d2b076127a2b" class=""><strong>55 &lt; 58 → sem troca</strong></p><hr id="2414f3b9-a5e5-8071-a131-e5c710bbd50a"/><h2 id="2414f3b9-a5e5-80e3-8e9c-d9962c5f5b85" class="">Inserir 59</h2><ul id="2414f3b9-a5e5-805f-aade-e9b6f6e387ec" class="bulleted-list"><li style="list-style-type:disc">Insere no final → índice 11</li></ul><ul id="2414f3b9-a5e5-8006-a2b7-f0834570f0c3" class="bulleted-list"><li style="list-style-type:disc">H = {66, 63, 56, 62, 58, 52, 50, 54, 60, 55, <strong>59</strong>}</li></ul><ul id="2414f3b9-a5e5-8045-9571-e71ba6ec9b25" class="bulleted-list"><li style="list-style-type:disc">Pai de 59: índice <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo fence="true">⌊</mo><mfrac><mn>11</mn><mn>2</mn></mfrac><mo fence="true">⌋</mo></mrow><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\left\lfloor \frac{11}{2} \right\rfloor = 5 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2em;vertical-align:-0.35em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">⌊</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">11</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">⌋</span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span></span></span></span></span><span>﻿</span></span> → 58</li></ul><p id="2414f3b9-a5e5-80e6-9bee-c1b24141a324" class=""><strong>59 &gt; 58 → troca:</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-800d-81a1-ca8a1e1f19ed" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+Troca 59 com 58:
+H = {66, 63, 56, 62, 59, 52, 50, 54, 60, 55, 58}
+
+</code></pre><ul id="2414f3b9-a5e5-80e4-bc11-d1f44f15cc09" class="bulleted-list"><li style="list-style-type:disc">Novo índice de 59: 5 → pai em índice 2 = 63</li></ul><p id="2414f3b9-a5e5-8000-85af-c19693ad3ed6" class=""><strong>59 &lt; 63 → para</strong></p><hr id="2414f3b9-a5e5-8041-8e79-fc03683046aa"/><h2 id="2414f3b9-a5e5-80bb-bf62-e9d06570076b" class="">Resultado final após as 3 inserções:</h2><figure id="2414f3b9-a5e5-80dd-845d-eab914b7c9b1" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><menclose notation="box"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="true"><mrow><mi>H</mi><mo>=</mo><mo stretchy="false">{</mo><mn>66</mn><mo separator="true">,</mo><mn>63</mn><mo separator="true">,</mo><mn>56</mn><mo separator="true">,</mo><mn>62</mn><mo separator="true">,</mo><mn>59</mn><mo separator="true">,</mo><mn>52</mn><mo separator="true">,</mo><mn>50</mn><mo separator="true">,</mo><mn>54</mn><mo separator="true">,</mo><mn>60</mn><mo separator="true">,</mo><mn>55</mn><mo separator="true">,</mo><mn>58</mn><mo stretchy="false">}</mo></mrow></mstyle></mstyle></mstyle></menclose></mrow><annotation encoding="application/x-tex">\boxed{H = \{66, 63, 56, 62, 59, 52, 50, 54, 60, 55, 58\}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.68em;vertical-align:-0.59em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.09em;"><span style="top:-3.68em;"><span class="pstrut" style="height:3.68em;"></span><span class="boxpad"><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mopen">{</span><span class="mord">66</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">63</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">56</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">62</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">59</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">52</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">50</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">54</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">60</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">55</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">58</span><span class="mclose">}</span></span></span></span></span><span style="top:-3.09em;"><span class="pstrut" style="height:3.68em;"></span><span class="stretchy fbox" style="height:1.68em;border-style:solid;border-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.59em;"><span></span></span></span></span></span></span></span></span></span></div></figure><p id="2414f3b9-a5e5-806e-8554-ed0ec9364725" class="">Representado como árvore (Heap Máxima):</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d3-a349-c425f98e7257" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             66
+           /    \
+         63      56
+        /  \    /  \
+      62   59  52  50
+     / \   /
+   54  60 55
+           \
+           58
+</code></pre><h1 id="2414f3b9-a5e5-8014-817a-e45d1a3c893e" class="">Q7)</h1><p id="2414f3b9-a5e5-808a-ada9-e626c973c94f" class="">Do resultado da Heap anterior, remova os três elementos com maior<br/>prioridade.<br/></p><h2 id="2414f3b9-a5e5-8004-907f-c9dab852ef1a" class="">Etapa 1: Remover o maior (raiz = 66)</h2><ul id="2414f3b9-a5e5-800a-8827-e67f027e770a" class="bulleted-list"><li style="list-style-type:disc">Substituir 66 com o <strong>último elemento</strong> → 58</li></ul><ul id="2414f3b9-a5e5-809f-8ef6-fa66848fdf25" class="bulleted-list"><li style="list-style-type:disc">Remove o último</li></ul><ul id="2414f3b9-a5e5-80dc-ad36-dbe5dc885114" class="bulleted-list"><li style="list-style-type:disc">H = {58, 63, 56, 62, 59, 52, 50, 54, 60, 55}</li></ul><h3 id="2414f3b9-a5e5-8092-aae6-fcd5aa556235" class="">Reajustar (heapify para baixo)</h3><ul id="2414f3b9-a5e5-8017-b01e-ec12afef0710" class="bulleted-list"><li style="list-style-type:disc">58 (índice 1)<ul id="2414f3b9-a5e5-800d-adf3-ce966978c421" class="bulleted-list"><li style="list-style-type:circle">filhos: 63 (2) e 56 (3)</li></ul><ul id="2414f3b9-a5e5-8018-a4a9-ddba395dab0f" class="bulleted-list"><li style="list-style-type:circle"><strong>maior filho é 63</strong> → troca</li></ul></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-804e-87f6-c93c9dcb4e70" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+Troca 58 com 63:
+{63, 58, 56, 62, 59, 52, 50, 54, 60, 55}
+
+</code></pre><ul id="2414f3b9-a5e5-80d4-b721-ee95fd8b5d6b" class="bulleted-list"><li style="list-style-type:disc">58 agora está no índice 2<ul id="2414f3b9-a5e5-803f-904c-c582cbacd04e" class="bulleted-list"><li style="list-style-type:circle">filhos: 62 (4) e 59 (5)</li></ul><ul id="2414f3b9-a5e5-80ab-bab9-fad6b7417cb1" class="bulleted-list"><li style="list-style-type:circle"><strong>maior filho é 62</strong> → troca</li></ul></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80c4-8efd-e1455c1c58bd" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+Troca 58 com 62:
+{63, 62, 56, 58, 59, 52, 50, 54, 60, 55}
+
+</code></pre><ul id="2414f3b9-a5e5-80e4-8cdc-c1e2835796ed" class="bulleted-list"><li style="list-style-type:disc">58 agora no índice 4<ul id="2414f3b9-a5e5-8091-9975-f795ea55f4e6" class="bulleted-list"><li style="list-style-type:circle">filhos: 54 (8) e 60 (9)</li></ul><ul id="2414f3b9-a5e5-804c-8489-ef453fdc0000" class="bulleted-list"><li style="list-style-type:circle"><strong>maior filho é 60</strong> → troca</li></ul></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8055-84e6-d5719b8ee82a" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+Troca 58 com 60:
+{63, 62, 56, 60, 59, 52, 50, 54, 58, 55}
+
+</code></pre><ul id="2414f3b9-a5e5-80bb-a720-f316326b09e2" class="bulleted-list"><li style="list-style-type:disc">58 agora no índice 9 → sem filhos → fim</li></ul><hr id="2414f3b9-a5e5-80c1-8306-d4d631f7d9d0"/><h2 id="2414f3b9-a5e5-80e7-aa90-d39bcf7e1918" class="">Etapa 2: Remover o maior (raiz = 63)</h2><ul id="2414f3b9-a5e5-80e8-b718-d71763232241" class="bulleted-list"><li style="list-style-type:disc">Substituir 63 com último (55)</li></ul><ul id="2414f3b9-a5e5-805b-876c-f012e6e006b0" class="bulleted-list"><li style="list-style-type:disc">Remove o último</li></ul><ul id="2414f3b9-a5e5-8004-88da-d65cb46406ce" class="bulleted-list"><li style="list-style-type:disc">H = {55, 62, 56, 60, 59, 52, 50, 54, 58}</li></ul><h3 id="2414f3b9-a5e5-80ec-aed4-ee76b1df9478" class="">Heapify:</h3><ul id="2414f3b9-a5e5-80b5-9fdd-f2cda1dc2362" class="bulleted-list"><li style="list-style-type:disc">55 (índice 1)<ul id="2414f3b9-a5e5-800a-9c81-d6dab000feb5" class="bulleted-list"><li style="list-style-type:circle">filhos: 62 (2) e 56 (3) → maior = 62 → troca</li></ul></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-802b-96fa-f6d1932c9291" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+{62, 55, 56, 60, 59, 52, 50, 54, 58}
+
+</code></pre><ul id="2414f3b9-a5e5-80ab-b110-e4148849a197" class="bulleted-list"><li style="list-style-type:disc">55 agora em índice 2<ul id="2414f3b9-a5e5-80d1-b3f1-cc4ff05bf2a3" class="bulleted-list"><li style="list-style-type:circle">filhos: 60 (4), 59 (5) → maior = 60 → troca</li></ul></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-803f-9eb7-c99225b2b31d" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+{62, 60, 56, 55, 59, 52, 50, 54, 58}
+
+</code></pre><ul id="2414f3b9-a5e5-8052-8e84-e70acd3b0661" class="bulleted-list"><li style="list-style-type:disc">55 agora em índice 4<ul id="2414f3b9-a5e5-80fb-b884-dbd90b31bf72" class="bulleted-list"><li style="list-style-type:circle">filhos: 54 (8), 58 (9) → maior = 58 → troca</li></ul></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-800d-a69c-dbbf23b58780" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+{62, 60, 56, 58, 59, 52, 50, 54, 55}
+
+</code></pre><ul id="2414f3b9-a5e5-80a7-b581-fad0b02cd331" class="bulleted-list"><li style="list-style-type:disc">55 agora em índice 9 → sem filhos → fim</li></ul><hr id="2414f3b9-a5e5-80ca-a617-e2a8de1783aa"/><h2 id="2414f3b9-a5e5-80e8-a4f8-d04c00d48feb" class="">Etapa 3: Remover o maior (raiz = 62)</h2><ul id="2414f3b9-a5e5-8014-b2b3-e6a394fe06a8" class="bulleted-list"><li style="list-style-type:disc">Substituir 62 com 55</li></ul><ul id="2414f3b9-a5e5-8093-a28c-e4db24452345" class="bulleted-list"><li style="list-style-type:disc">Remove último</li></ul><ul id="2414f3b9-a5e5-8009-998d-f45f62cb78ac" class="bulleted-list"><li style="list-style-type:disc">H = {55, 60, 56, 58, 59, 52, 50, 54}</li></ul><h3 id="2414f3b9-a5e5-8080-b4ed-e3fa5724eb5b" class="">Heapify:</h3><ul id="2414f3b9-a5e5-80cf-910d-e92ddea0a0bd" class="bulleted-list"><li style="list-style-type:disc">55 (índice 1)<ul id="2414f3b9-a5e5-804d-90e9-d9b7f24e3664" class="bulleted-list"><li style="list-style-type:circle">filhos: 60 (2), 56 (3) → maior = 60 → troca</li></ul></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d9-805d-e6a50c91175e" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+{60, 55, 56, 58, 59, 52, 50, 54}
+
+</code></pre><ul id="2414f3b9-a5e5-80bb-9b7e-c864cefab99c" class="bulleted-list"><li style="list-style-type:disc">55 agora em índice 2<ul id="2414f3b9-a5e5-80fe-9745-c427a26a9e13" class="bulleted-list"><li style="list-style-type:circle">filhos: 58 (4), 59 (5) → maior = 59 → troca</li></ul></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80c1-9210-fe3fa3e5eaef" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">Copiar código
+{60, 59, 56, 58, 55, 52, 50, 54}
+
+</code></pre><ul id="2414f3b9-a5e5-80fb-b061-ffe551d64aa4" class="bulleted-list"><li style="list-style-type:disc">55 agora em índice 5 → sem filhos → fim</li></ul><hr id="2414f3b9-a5e5-8083-a367-f6336aecf5d0"/><h3 id="2414f3b9-a5e5-80a8-9a3b-fa887ebf9328" class="">Resultado final da heap após 3 remoções:</h3><figure id="2414f3b9-a5e5-8060-9dbe-e4062d8a2260" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>H</mi><mo>=</mo><menclose notation="box"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="true"><mrow><mi>H</mi><mo>=</mo><mo stretchy="false">{</mo><mn>60</mn><mo separator="true">,</mo><mn>59</mn><mo separator="true">,</mo><mn>56</mn><mo separator="true">,</mo><mn>58</mn><mo separator="true">,</mo><mn>55</mn><mo separator="true">,</mo><mn>52</mn><mo separator="true">,</mo><mn>50</mn><mo separator="true">,</mo><mn>54</mn><mo stretchy="false">}</mo></mrow></mstyle></mstyle></mstyle></menclose></mrow><annotation encoding="application/x-tex">H=\boxed{H = \{60, 59, 56, 58, 55, 52, 50, 54\}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.68em;vertical-align:-0.59em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.09em;"><span style="top:-3.68em;"><span class="pstrut" style="height:3.68em;"></span><span class="boxpad"><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mopen">{</span><span class="mord">60</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">59</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">56</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">58</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">55</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">52</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">50</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">54</span><span class="mclose">}</span></span></span></span></span><span style="top:-3.09em;"><span class="pstrut" style="height:3.68em;"></span><span class="stretchy fbox" style="height:1.68em;border-style:solid;border-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.59em;"><span></span></span></span></span></span></span></span></span></span></div></figure><h3 id="2414f3b9-a5e5-8066-b36f-ff18a6838120" class="">Elementos removidos:</h3><ul id="2414f3b9-a5e5-80ae-ac5b-ebde57b9d4f5" class="bulleted-list"><li style="list-style-type:disc">66, 63, 62 → os <strong>3 maiores</strong></li></ul><h1 id="2414f3b9-a5e5-80ac-b683-dfa6a8f76f3c" class="">Q8)</h1><p id="2414f3b9-a5e5-8010-a74a-cf98d1da3bcb" class="">Seja uma lista dada pelas prioridades a seguir:<br/>L = {18 25 41 34 14 10 52 50 48}<br/>Explique passo a passo o procedimento de contrução para uma Heap-Max e<br/>uma Heap-Min.<br/></p><h2 id="2414f3b9-a5e5-8076-816a-e68affccbf88" class="">PARTE 1 — Construção da <strong>Heap-Máxima (Max-Heap)</strong></h2><hr id="2414f3b9-a5e5-8075-9533-c381e4ab8f53"/><h3 id="2414f3b9-a5e5-8053-aa12-fb1e005aa212" class="">Passo 1: Representar a lista como uma árvore binária completa (índice 1)</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-807f-ace5-cabcc5bd4981" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+Índices:  1   2   3   4   5   6   7   8   9
+Valores: 18  25  41  34  14  10  52  50  48
+
+</code></pre><p id="2414f3b9-a5e5-80fb-a438-dc86a89646b3" class="">Árvore inicial:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-805b-90ed-e11f260458ab" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             18
+          /      \
+        25        41
+      /   \      /   \
+    34    14   10   52
+   / \
+ 50  48
+
+</code></pre><hr id="2414f3b9-a5e5-8003-9262-f4571b13b54f"/><h3 id="2414f3b9-a5e5-8030-b74b-ee8eb99465dc" class="">Passo 2: Aplicar Heapify (bottom-up)</h3><p id="2414f3b9-a5e5-80b0-aebb-d54e2ee49013" class="">Começamos do <strong>último pai</strong>, que está no índice:</p><figure id="2414f3b9-a5e5-80f9-b5c5-f56724be8ac5" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mo fence="true">⌊</mo><mfrac><mi>n</mi><mn>2</mn></mfrac><mo fence="true">⌋</mo></mrow><mo>=</mo><mrow><mo fence="true">⌊</mo><mfrac><mn>9</mn><mn>2</mn></mfrac><mo fence="true">⌋</mo></mrow><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">\left\lfloor \frac{n}{2} \right\rfloor = \left\lfloor \frac{9}{2} \right\rfloor = 4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.836em;vertical-align:-0.686em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size2">⌊</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1076em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size2">⌋</span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.4em;vertical-align:-0.95em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">⌊</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">⌋</span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span></span></span></span></span></div></figure><h3 id="2414f3b9-a5e5-80f5-bd35-cd68ae433681" class="">Índice 4 → valor 34 (filhos 50 e 48)</h3><ul id="2414f3b9-a5e5-8016-9609-feea06d7f20e" class="bulleted-list"><li style="list-style-type:disc">34 &lt; 50 → troca com 50</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80fd-b715-ddaece8e4598" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             18
+          /      \
+        25        41
+      /   \      /   \
+    50    14   10   52
+   / \
+ 34  48
+
+</code></pre><ul id="2414f3b9-a5e5-80e5-b35e-df0f5f37e6b2" class="bulleted-list"><li style="list-style-type:disc">34 agora no índice 8, é folha → ok</li></ul><hr id="2414f3b9-a5e5-8008-a676-f5b28f63b846"/><h3 id="2414f3b9-a5e5-80f4-a06b-d599bc0e6b85" class="">Índice 3 → valor 41 (filhos 10 e 52)</h3><ul id="2414f3b9-a5e5-803e-9367-fb05e2d6b3f4" class="bulleted-list"><li style="list-style-type:disc">41 &lt; 52 → troca com 52</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d1-8385-c0c97189d965" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             18
+          /      \
+        25        52
+      /   \      /   \
+    50    14   10   41
+   / \
+ 34  48
+
+</code></pre><ul id="2414f3b9-a5e5-80fa-b24d-c5347fd33f8c" class="bulleted-list"><li style="list-style-type:disc">41 agora no índice 7 → é folha → ok</li></ul><hr id="2414f3b9-a5e5-80af-8958-fa68d35b6bfd"/><h3 id="2414f3b9-a5e5-80d9-b676-e1f9b83de58d" class="">Índice 2 → valor 25 (filhos 50 e 14)</h3><ul id="2414f3b9-a5e5-80f1-8289-c76ebd0a19d1" class="bulleted-list"><li style="list-style-type:disc">25 &lt; 50 → troca com 50</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80c5-beef-df5ce4993024" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             18
+          /      \
+        50        52
+      /   \      /   \
+    25    14   10   41
+   / \
+ 34  48
+
+</code></pre><ul id="2414f3b9-a5e5-801b-854a-cd41f52e544b" class="bulleted-list"><li style="list-style-type:disc">25 agora no índice 4 → filhos: 34 e 48</li></ul><ul id="2414f3b9-a5e5-805a-beb7-e672ace71b35" class="bulleted-list"><li style="list-style-type:disc">25 &lt; 48 → troca com 48</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8075-bf3d-df4622bc4b21" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             18
+          /      \
+        50        52
+      /   \      /   \
+    48    14   10   41
+   / \
+ 34  25
+
+</code></pre><ul id="2414f3b9-a5e5-800e-9096-e04f76f767e6" class="bulleted-list"><li style="list-style-type:disc">25 agora no índice 9 → ok</li></ul><hr id="2414f3b9-a5e5-8002-a79a-ccc70b3d9578"/><h3 id="2414f3b9-a5e5-80d6-8344-d73d4b0be1a3" class="">Índice 1 → valor 18 (filhos 50 e 52)</h3><ul id="2414f3b9-a5e5-80ba-97d8-c87d14d5d78a" class="bulleted-list"><li style="list-style-type:disc">18 &lt; 52 → troca com 52</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d0-a70b-d761db4ba784" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             52
+          /      \
+        50        18
+      /   \      /   \
+    48    14   10   41
+   / \
+ 34  25
+
+</code></pre><ul id="2414f3b9-a5e5-8011-8bfc-fcba121050b3" class="bulleted-list"><li style="list-style-type:disc">18 agora índice 3 → filhos 10 e 41</li></ul><ul id="2414f3b9-a5e5-8089-9efb-f7a6bccd15e7" class="bulleted-list"><li style="list-style-type:disc">18 &lt; 41 → troca com 41</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8039-8b6c-fd9a5ec31b87" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             52
+          /      \
+        50        41
+      /   \      /   \
+    48    14   10   18
+   / \
+ 34  25
+
+</code></pre><p id="2414f3b9-a5e5-80f3-950d-d62bc1dfc020" class="">Agora tudo está correto!</p><hr id="2414f3b9-a5e5-806e-8e87-edd3288bc182"/><h3 id="2414f3b9-a5e5-805e-98e5-c0ffe27a9cd8" class=""><strong>Resultado final — Max-Heap:</strong></h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-803b-a8ff-d0b7fb040ff9" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             52
+          /      \
+        50        41
+      /   \      /   \
+    48    14   10   18
+   / \
+ 34  25
+
+</code></pre><hr id="2414f3b9-a5e5-80fa-93ce-d7ba7fb2d604"/><h2 id="2414f3b9-a5e5-8050-8321-d81592688c59" class="">PARTE 2 — Construção da <strong>Heap-Mínima (Min-Heap)</strong></h2><hr id="2414f3b9-a5e5-8055-850a-e2a90dc82693"/><h3 id="2414f3b9-a5e5-8028-a5ae-e60f634d8c4a" class="">Passo 1: Mesmo vetor:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8043-8ab5-ea51e71abf56" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+L = {18, 25, 41, 34, 14, 10, 52, 50, 48}
+</code></pre><p id="2414f3b9-a5e5-808c-93dc-c88ea15dc141" class="">Árvore inicial (completa):</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80c3-9699-ef2f24ab937d" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             18
+          /      \
+        25        41
+      /   \      /   \
+    34    14   10   52
+   / \
+ 50  48
+
+</code></pre><hr id="2414f3b9-a5e5-808f-87db-f555fc10df04"/><h3 id="2414f3b9-a5e5-809b-a0d9-c64ac3531ef3" class="">Passo 2: Heapify bottom-up</h3><p id="2414f3b9-a5e5-80c1-a804-f1ab324abfb0" class="">Último pai = índice 4</p><h3 id="2414f3b9-a5e5-80cd-b5cb-f112622afbe3" class="">Índice 4 → valor 34 (filhos 50 e 48)</h3><ul id="2414f3b9-a5e5-80ee-85e7-d51b059cf0e9" class="bulleted-list"><li style="list-style-type:disc">34 &lt; 50, 34 &lt; 48 → ok</li></ul><hr id="2414f3b9-a5e5-80bb-9e55-f3ad81018860"/><h3 id="2414f3b9-a5e5-8045-bd01-fdf4e7862f94" class="">Índice 3 → valor 41 (filhos 10 e 52)</h3><ul id="2414f3b9-a5e5-802b-bd19-e8e25233308a" class="bulleted-list"><li style="list-style-type:disc">41 &gt; 10 → troca</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8093-82cd-f59406919dd4" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             18
+          /      \
+        25        10
+      /   \      /   \
+    34    14   41   52
+   / \
+ 50  48
+
+</code></pre><hr id="2414f3b9-a5e5-8037-bd99-fea7a542432b"/><h3 id="2414f3b9-a5e5-80c2-a4c6-fcb7808d0dbb" class="">Índice 2 → valor 25 (filhos 34 e 14)</h3><ul id="2414f3b9-a5e5-80a1-a687-ce71b7ae0bc4" class="bulleted-list"><li style="list-style-type:disc">25 &gt; 14 → troca com 14</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-804a-9889-ce2942f6da6f" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             18
+          /      \
+        14        10
+      /   \      /   \
+    34    25   41   52
+   / \
+ 50  48
+
+</code></pre><hr id="2414f3b9-a5e5-80ff-8d21-cb831d713e1d"/><h3 id="2414f3b9-a5e5-8017-b7ed-fe8918ba95de" class="">Índice 1 → valor 18 (filhos 14 e 10)</h3><ul id="2414f3b9-a5e5-80c3-a358-cba796c3c3d8" class="bulleted-list"><li style="list-style-type:disc">18 &gt; 10 → troca com 10</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8010-9ba9-c709bab28da1" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             10
+          /      \
+        14        18
+      /   \      /   \
+    34    25   41   52
+   / \
+ 50  48
+
+</code></pre><ul id="2414f3b9-a5e5-80c3-813e-fba0e6439850" class="bulleted-list"><li style="list-style-type:disc">18 agora índice 3 → filhos 41 e 52 → ok</li></ul><hr id="2414f3b9-a5e5-8036-a5e4-d03e05d2576a"/><h3 id="2414f3b9-a5e5-803b-8ba8-de2e369fffc5" class=""><strong>Resultado final — Min-Heap:</strong></h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8032-8018-ed8f33c14846" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             10
+          /      \
+        14        18
+      /   \      /   \
+    34    25   41   52
+   / \
+ 50  48
+
+</code></pre><hr id="2414f3b9-a5e5-8020-9654-dbd6c4a9541b"/><h2 id="2414f3b9-a5e5-8036-8529-e53b368952ec" class="">Resumo Final:</h2><h3 id="2414f3b9-a5e5-802d-9b4f-df3c8bee279b" class="">Max-Heap:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-803c-a66a-f88d3fa9b98b" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             52
+          /      \
+        50        41
+      /   \      /   \
+    48    14   10   18
+   / \
+ 34  25
+
+</code></pre><h3 id="2414f3b9-a5e5-8067-84ca-f71eebe61bb8" class="">Min-Heap:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-802c-a0c2-cb57ed3d8a27" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+             10
+          /      \
+        14        18
+      /   \      /   \
+    34    25   41   52
+   / \
+ 50  48
+</code></pre><h1 id="2414f3b9-a5e5-8044-8e7c-edc1f16f49fb" class="">Q11)</h1><p id="2414f3b9-a5e5-800e-bafb-ec1bfedd2de9" class="">Considere uma heap max construído após a inserção elemento a elemento da lista: 10, 20, 15, 30, 40, 50, 25.</p><p id="2414f3b9-a5e5-8017-a76e-c42aca568223" class="">
+</p><p id="2414f3b9-a5e5-8007-9029-f1c619f05c85" class="">a) Desenhe a representação dessa Heap em formato de árvore;</p><p id="2414f3b9-a5e5-80da-b9d7-cc270f5ea6d8" class="">Vamos construir a heap max a partir da inserção elemento a elemento da lista:</p><hr id="2414f3b9-a5e5-807d-b870-d24448a220bb"/><h3 id="2414f3b9-a5e5-8010-af29-dd0aec6cea1e" class="">Passo a passo da construção da Heap Max:</h3><p id="2414f3b9-a5e5-80e6-bd3c-f71aac0904c3" class=""><strong>1. Inserir 10:</strong></p><p id="2414f3b9-a5e5-8047-86ea-c97e0981cd36" class="">Heap:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8005-bc8d-e3a36cb2ee82" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+10
+
+</code></pre><p id="2414f3b9-a5e5-8051-8f44-c80bb551d444" class=""><strong>2. Inserir 20:</strong></p><p id="2414f3b9-a5e5-80ac-8b21-ddde98f1d22f" class="">Coloca 20 como filho de 10, depois sobe pois 20 &gt; 10.</p><p id="2414f3b9-a5e5-80f3-ba01-d033e4f911d1" class="">Heap:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80a2-bf06-d8448f675865" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+   20
+  /
+10
+
+</code></pre><p id="2414f3b9-a5e5-8012-a141-fc7c9a217150" class=""><strong>3. Inserir 15:</strong></p><p id="2414f3b9-a5e5-8010-aa1b-d76981364027" class="">Coloca 15 como filho direito de 20, 15 &lt; 20 então permanece.</p><p id="2414f3b9-a5e5-800b-8829-e9a31c848d10" class="">Heap:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-804f-8c25-ef06c1891cba" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+   20
+  /  \
+10   15
+
+</code></pre><p id="2414f3b9-a5e5-8018-aa67-ce16ae591966" class=""><strong>4. Inserir 30:</strong></p><p id="2414f3b9-a5e5-80f4-9f99-e2809066b3f8" class="">Insere 30 como filho esquerdo de 10. Como 30 &gt; 10, sobe 30 e troca de lugar com 10. Como 30 &gt; 20, sobe 30 e troca de lugar com 20.</p><p id="2414f3b9-a5e5-807e-b5c9-eb1d174f459f" class="">Heap:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-801e-8a36-efda6ca3e083" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+   30
+  /  \
+20   15
+/
+10
+
+</code></pre><p id="2414f3b9-a5e5-802a-a957-f4c34d6c5027" class=""><strong>5. Inserir 40:</strong></p><p id="2414f3b9-a5e5-8033-a827-cdae7c1b63e0" class="">Insere 40 como filho direito de 20. Como 40 &gt; 20, sobe 40 e troca de lugar com 20. Como 40 &gt; 30, sobe 40 e troca com 30.</p><p id="2414f3b9-a5e5-8023-b210-d7ec3a5af911" class="">Heap:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8065-ae51-cb17f0f2a12a" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+   40
+  /  \
+30   15
+/ \
+10 20
+
+</code></pre><p id="2414f3b9-a5e5-8047-a433-e76b1c79d811" class=""><strong>6. Inserir 50:</strong></p><p id="2414f3b9-a5e5-8068-9fa0-f1eca48c044d" class="">Insere 50 como filho esquerdo de 15. Como 50 &gt; 15, sobe 50 e troca com 15. Como 50 &gt; 40, sobe 50 e troca com 40.</p><p id="2414f3b9-a5e5-80d5-9111-c5de3c5c4303" class="">Heap:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80ce-80b6-ee1860ce8eee" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+    50
+   /  \
+  40   15
+ / \   /
+10 20 30
+
+</code></pre><p id="2414f3b9-a5e5-8032-9f55-e15756c83b08" class=""><strong>7. Inserir 25:</strong></p><p id="2414f3b9-a5e5-8061-8959-d9ea1c2d246c" class="">Insere 25 como filho direito de 15. Como 25 &gt; 15, sobe 25 e troca com 15.</p><p id="2414f3b9-a5e5-8000-9d6a-d7442f1eccf0" class="">Heap:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8048-80cf-c1419986fbd0" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+    50
+   /  \
+  40   25
+ / \   / \
+10 20 30 15
+
+</code></pre><hr id="2414f3b9-a5e5-80c5-97de-d424fcc1d486"/><h3 id="2414f3b9-a5e5-801d-a45d-cbba1781db0a" class="">Representação final da Heap Max em formato de árvore:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80c7-9eab-ee347fc0bdea" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        50
+       /  \
+     40    25
+    /  \  /  \
+  10   20 30  15
+
+</code></pre><p id="2414f3b9-a5e5-804b-a9b6-fb2cde57618d" class="">b) Remova o elemento máximo e desenha a árvore da heap resultante;</p><h3 id="2414f3b9-a5e5-808e-b10d-ce2cffabad95" class="">Heap antes da remoção:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8057-9427-e0d342231023" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        50
+       /  \
+     40    25
+    /  \  /  \
+  10   20 30  15
+
+</code></pre><hr id="2414f3b9-a5e5-803a-ae88-c55f0fd88152"/><h3 id="2414f3b9-a5e5-80cf-9489-e2bc17c31f94" class="">Passos para remover o máximo (50):</h3><ol type="1" id="2414f3b9-a5e5-8083-b01b-fc1855eafa2c" class="numbered-list" start="1"><li><strong>Remover a raiz (50).</strong></li></ol><ol type="1" id="2414f3b9-a5e5-801a-b521-db31bd7b227c" class="numbered-list" start="2"><li><strong>Substituir a raiz pelo último elemento da heap</strong> (que é o 15).</li></ol><p id="2414f3b9-a5e5-8018-b6b6-c3018f2f3c9a" class="">Heap fica temporariamente assim:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8001-8499-fe31a1267f20" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        15
+       /  \
+     40    25
+    /  \  /
+  10   20 30
+
+</code></pre><ol type="1" id="2414f3b9-a5e5-8053-981c-cfb9ce76b05d" class="numbered-list" start="1"><li><strong>Fazer o &quot;heapify&quot; para reestruturar a heap max:</strong></li></ol><ul id="2414f3b9-a5e5-801a-9edd-c851f3b4d6c4" class="bulleted-list"><li style="list-style-type:disc">Compare o novo elemento raiz (15) com seus filhos (40 e 25).</li></ul><ul id="2414f3b9-a5e5-8027-b007-d245ddadd127" class="bulleted-list"><li style="list-style-type:disc">O maior filho é 40.</li></ul><ul id="2414f3b9-a5e5-8028-8862-db787a54e285" class="bulleted-list"><li style="list-style-type:disc">Como 40 &gt; 15, troque-os.</li></ul><p id="2414f3b9-a5e5-8013-8ccb-efbc2749377d" class="">Heap após primeira troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-800f-b053-eca08d84d8e1" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        40
+       /  \
+     15    25
+    /  \  /
+  10   20 30
+
+</code></pre><ul id="2414f3b9-a5e5-80b5-a978-d32ff417921c" class="bulleted-list"><li style="list-style-type:disc">Agora, o 15 está na posição onde tinha o 40. Compare com seus filhos (10 e 20).</li></ul><ul id="2414f3b9-a5e5-80a7-aa4f-e7aa3d7515d6" class="bulleted-list"><li style="list-style-type:disc">O maior filho é 20.</li></ul><ul id="2414f3b9-a5e5-804c-a8b4-da46aa1bb945" class="bulleted-list"><li style="list-style-type:disc">Como 20 &gt; 15, troque-os.</li></ul><p id="2414f3b9-a5e5-8019-bc10-f3790d5f4b87" class="">Heap após segunda troca:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80d9-a585-c838b95486d3" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        40
+       /  \
+     20    25
+    /  \  /
+  10   15 30
+
+</code></pre><ul id="2414f3b9-a5e5-8032-b25b-fff0ee4b5c96" class="bulleted-list"><li style="list-style-type:disc">Agora o 15 está numa folha (sem filhos), então para.</li></ul><hr id="2414f3b9-a5e5-803c-9d66-faeea4bef36e"/><h3 id="2414f3b9-a5e5-80c5-a3a5-d753fcc82243" class="">Resultado final após remoção do máximo:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80e5-bcce-d8a58507cf92" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        40
+       /  \
+     20    25
+    /  \  /
+  10   15 30
+
+</code></pre><p id="2414f3b9-a5e5-8017-87fe-f69174bf7bdc" class="">c) Após o item b), modifique a prioridade de 10 para 45 e redesenhe a árvore</p><h3 id="2414f3b9-a5e5-80c1-ad58-f6db1cf02ba2" class="">Heap atual (após remoção do máximo):</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8006-aca1-ef8b1fae30eb" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        40
+       /  \
+     20    25
+    /  \  /
+  10   15 30
+
+</code></pre><hr id="2414f3b9-a5e5-803e-86ec-d4966beb4d65"/><h3 id="2414f3b9-a5e5-801b-a35d-f9dc57eb2b5f" class="">Passos para modificar prioridade de 10 para 45:</h3><ol type="1" id="2414f3b9-a5e5-8026-b1a8-e64cc2bbb7e2" class="numbered-list" start="1"><li><strong>Substituir o valor 10 por 45:</strong></li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-8023-a259-f4a4fdcfc2e6" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        40
+       /  \
+     20    25
+    /  \  /
+  45   15 30
+
+</code></pre><ol type="1" id="2414f3b9-a5e5-807f-b511-c065abea5694" class="numbered-list" start="1"><li><strong>Corrigir a heap subindo o elemento 45 até a posição correta:</strong></li></ol><ul id="2414f3b9-a5e5-809a-89fa-cc87c5fa3dd8" class="bulleted-list"><li style="list-style-type:disc">45 está na posição filho esquerdo de 20.</li></ul><ul id="2414f3b9-a5e5-80e5-b98e-fb849ea4418b" class="bulleted-list"><li style="list-style-type:disc">Compare 45 com o pai 20: 45 &gt; 20, então troca.</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-803c-a304-c23257e72fc1" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        40
+       /  \
+     45    25
+    /  \  /
+  20   15 30
+
+</code></pre><ul id="2414f3b9-a5e5-806e-b273-fab5a5023e81" class="bulleted-list"><li style="list-style-type:disc">Agora 45 está filho esquerdo de 40.</li></ul><ul id="2414f3b9-a5e5-8054-96e9-f41665e47075" class="bulleted-list"><li style="list-style-type:disc">Compare 45 com o pai 40: 45 &gt; 40, troca.</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-809f-832d-fbbfde3c6d78" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        45
+       /  \
+     40    25
+    /  \  /
+  20   15 30
+
+</code></pre><ul id="2414f3b9-a5e5-802c-8285-e73e12ea1b63" class="bulleted-list"><li style="list-style-type:disc">45 é a nova raiz, não há mais subidas.</li></ul><hr id="2414f3b9-a5e5-8041-b6ef-fdf8e6de121b"/><h3 id="2414f3b9-a5e5-809e-aa63-e6fa4c11a9b5" class="">Heap final após modificar 10 para 45:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2414f3b9-a5e5-80f1-84c5-e7bfebc28713" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">
+        45
+       /  \
+     40    25
+    /  \  /
+  20   15 30
+
+</code></pre><h1 id="2414f3b9-a5e5-8095-bbad-d97a7f74a370" class="">Q12)</h1><p id="2414f3b9-a5e5-80e2-b583-c0400e1d1d46" class="">Em uma Heap H, os elementos estão dispostos de maneira que os filhos sempre são menos do que os pais. Sobre o funcionamento da HEAP e desta descrita em particular, julgue as afirmações em V(erdadeiro) ou F(also):</p><p id="2414f3b9-a5e5-805e-990c-fd9bc5141404" class="">
+</p><p id="2414f3b9-a5e5-803d-bec1-d3aee2b4710b" class="">(a) Na HEAP H, os filhos da esquerda são sempre menores que os filhos da direita;</p><p id="2414f3b9-a5e5-800f-adda-d53d87a6d72c" class="">b) Esta é uma Heap-Min.</p><p id="2414f3b9-a5e5-8069-8e09-f40b00559512" class="">c) A Raiz será o último elemento, e por isso será o elemento com maior prioridade.</p><p id="2414f3b9-a5e5-803b-bcee-d812cbd2ef6c" class="">d) É possível que no processo de remoção de um elemento dessa Heap, a raiz seja substituída pelo elemento com menor prioridade.</p><p id="2414f3b9-a5e5-80d5-9abf-fb7be3429fee" class="">e) Sempre, no processo de remoção de um elemento dessa Heap, a raiz é substituída pelo elemento com menor prioridade e logo em seguida ocorre o processo de descida.</p><p id="2414f3b9-a5e5-80db-86a1-c405f5c49c5f" class=""><strong>(a) Na HEAP H, os filhos da esquerda são sempre menores que os filhos da direita;</strong></p><p id="2414f3b9-a5e5-806d-a263-d4a0afa6f0ed" class=""><strong>Falso.</strong></p><p id="2414f3b9-a5e5-80b7-9a20-c8b8361f6fa7" class="">Não existe essa regra na heap. A única regra é que os filhos são menores que o pai (no max-heap). A ordem relativa entre o filho esquerdo e o direito não é garantida, um pode ser maior ou menor que o outro.</p><hr id="2414f3b9-a5e5-80d9-b858-da325d635e16"/><p id="2414f3b9-a5e5-80e4-9ee4-f88a8d1e896a" class=""><strong>(b) Esta é uma Heap-Min.</strong></p><p id="2414f3b9-a5e5-8038-a3b8-ca9dfb47191c" class=""><strong>Falso.</strong></p><p id="2414f3b9-a5e5-80ba-a413-fbd1bb3b4f07" class="">Como dito, os filhos são menores que os pais, logo o maior está na raiz, característica da <strong>Heap-Max</strong>. A Heap-Min teria os filhos maiores que os pais.</p><hr id="2414f3b9-a5e5-80fa-abbc-fbac19ab49b4"/><p id="2414f3b9-a5e5-8077-a311-c86dc9a78869" class=""><strong>(c) A Raiz será o último elemento, e por isso será o elemento com maior prioridade.</strong></p><p id="2414f3b9-a5e5-8049-9f79-d8aaed880e4b" class=""><strong>Falso.</strong></p><p id="2414f3b9-a5e5-80d7-a361-c7677a646ca5" class="">Na heap, a raiz é o <strong>primeiro</strong> elemento, e ela tem a maior prioridade (no max-heap). O último elemento é uma folha.</p><hr id="2414f3b9-a5e5-80b5-a620-c2a4081454bb"/><p id="2414f3b9-a5e5-803a-9a0a-e43422535cfc" class=""><strong>(d) É possível que no processo de remoção de um elemento dessa Heap, a raiz seja substituída pelo elemento com menor prioridade.</strong></p><p id="2414f3b9-a5e5-80bd-a3c6-d99db8990700" class=""><strong>Verdadeiro.</strong></p><p id="2414f3b9-a5e5-801c-8a2b-c4d7ff4af47b" class="">Na remoção da raiz, o último elemento (que geralmente tem menor prioridade) é colocado na raiz antes do processo de &quot;heapify&quot; para restaurar a propriedade da heap.</p><hr id="2414f3b9-a5e5-8074-ab09-f84f364bd267"/><p id="2414f3b9-a5e5-8038-b6b1-c7d5e835157b" class=""><strong>(e) Sempre, no processo de remoção de um elemento dessa Heap, a raiz é substituída pelo elemento com menor prioridade e logo em seguida ocorre o processo de descida.</strong></p><p id="2414f3b9-a5e5-8075-b332-cae6de707f7e" class=""><strong>Falso.</strong></p><p id="2414f3b9-a5e5-8037-ac96-d7d731b8e7c2" class="">Nem sempre o último elemento tem a <strong>menor</strong> prioridade, ele pode ter uma prioridade intermediária qualquer, só que é o último na estrutura. Porém, é verdade que após a substituição da raiz pelo último elemento, ocorre o processo de descida (heapify) para restaurar a heap.</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
