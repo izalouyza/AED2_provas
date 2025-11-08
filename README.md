@@ -4,4 +4,4 @@ Repositório da disciplina, com as respostas das listas de exercícios, bem como
 
 ![Tecnologia](https://img.shields.io/badge/Tecnologia-HTML-orange)
 ![Ambiente](https://img.shields.io/badge/Ambiente-VSCode_&_Notion-blue)
-![Último commit](https://img.shields.io/github/last-commit/izalouyza/AED2_recursosdeestudo)
+![Último commit](https://img.shields.io/github/last-commit/izalouyza/AED2_provas)
